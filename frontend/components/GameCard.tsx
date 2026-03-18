@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Game } from "../app/types/game"
+import { MdPlaylistAddCheck } from "react-icons/md"
 type Props = {
   game: Game
 }
@@ -10,7 +11,7 @@ export default function GameCard({ game }: Props) {
       className="border rounded-lg overflow-hidden shadow-sm 
                  hover:shadow-lg hover:-translate-y-1 
                  transition duration-200 cursor-pointer block">
-        <img
+      <img
         src={game.coverImage}
         alt={game.title}
         className="w-full h-48 object-cover"/>
@@ -25,6 +26,15 @@ export default function GameCard({ game }: Props) {
             : "text-red-600"}`}>
           {game.inStock ? "In Stock" : "Out of Stock"}
         </p>
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            console.log("Add to wishlist:", game.title)
+          }}
+          className="mt-3 w-full flex items-center justify-center gap-2 
+                     bg-indigo-600 text-white py-2 rounded-md 
+                     hover:bg-indigo-900 transition"
+        ><MdPlaylistAddCheck />Add to Wishlist</button>
       </div>
     </Link>
   )

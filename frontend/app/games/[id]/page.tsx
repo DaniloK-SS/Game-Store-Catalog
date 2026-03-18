@@ -46,9 +46,9 @@ export default async function GameDetailsPage({ params }: Props) {
         <p className="text-gray-600 leading-relaxed">
           {game.description}
         </p>
-      </div>
+  </div>
 
-    </div>
+  </div>
 
   </div>
 )
