@@ -1,9 +1,20 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import games from "@/app/data/games.json"
 import GameGrid from "@/components/GameGrid"
 import FilterPanel from "@/components/FilterPanel"
 import { useSearchParams } from "next/navigation"
+
+
+const getWishlist = () => {
+  const stringList = localStorage.getItem("wishlist")
+  return stringList?.split(",").map(x => Number.parseInt(x.trim())).filter(num => Number.isFinite(num) && !Number.isNaN(num)) ?? []
+}
+
+
+const isInWishlist = (wishlist:number[], gameId:number) => {
+  return wishlist.some(wishlistId => wishlistId === gameId)
+}
 
 export default function HomePage() {
   const search = useSearchParams().get("search") || ""
@@ -12,6 +23,26 @@ export default function HomePage() {
   const [inStock, setInStock] = useState(false)
   const [i, setI] = useState(0)
   const featured = games.filter(g => g.featured).slice(0, 5)
+  const [wishlist, setWishlist] = useState<number[]>([])
+
+  console.log(wishlist)
+
+  const handleAddToWishlist = (gameId:number) => {
+    const newWishlist= wishlist.concat([gameId])
+    setWishlist(newWishlist)
+    localStorage.setItem("wishlist", newWishlist.join(","))
+  }
+
+    const handleRemoveFromWishlist = (gameId:number) => {
+    const newWishlist= wishlist.filter(gid => gid !== gameId)
+    setWishlist(newWishlist)
+    localStorage.setItem("wishlist", newWishlist.join(","))
+  }
+
+  useEffect(() => {
+    const wishlist = getWishlist()
+    setWishlist(wishlist)
+  }, [])
 
   const filteredGames = games.filter(g =>
     g.title.toLowerCase().includes(search.toLowerCase()) &&
@@ -60,7 +91,11 @@ export default function HomePage() {
             />
           ))}
         </div>
-        <GameGrid games={filteredGames} />
+        <GameGrid games={filteredGames} onAddToWishlist={handleAddToWishlist} isInWishlist={gameId => {
+          return isInWishlist(wishlist, gameId)
+        }}
+        onRemoveFromWishlist={handleRemoveFromWishlist}
+        />
         {filteredGames.length === 0 && (
           <p className="text-center mt-10">We dont have that type of games!</p>
         )}
