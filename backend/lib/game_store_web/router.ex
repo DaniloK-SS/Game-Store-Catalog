@@ -23,7 +23,7 @@ defmodule GameStoreWeb.Router do
   scope "/api", GameStoreWeb do
     pipe_through :api
 
-    resources "/games", GameController, only: [:index, :show]
+    resources "/games", GameController, only: [:index, :show, :create]
   end
 
   # Other scopes may use custom stacks.
