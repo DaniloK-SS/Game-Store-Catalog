@@ -1,19 +1,20 @@
 "use client"
-type Props = {
-  search: string
-  setSearch: (value: string) => void
-}
-export default function SearchBar({ search, setSearch }: Props) {
+import { useRouter, useSearchParams } from "next/navigation"
+export default function SearchBar() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const search = searchParams.get("search") || ""
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSearch(e.target.value)
+    const value = e.target.value
+    router.push(`/games?search=${value}`)
   }
-return (
+  return (
     <input
       type="text"
       placeholder="Search games..."
       value={search}
       onChange={handleChange}
-      className="w-full max-w-xs md:max-w-md mx-4 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    />
-)
+      className="w-full max-w-xs md:max-w-md mx-4 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+  )
 }

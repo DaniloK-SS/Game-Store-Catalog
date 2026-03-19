@@ -5,11 +5,8 @@ import { FaGamepad } from "react-icons/fa"
 import { MdPlaylistAddCheck } from "react-icons/md"
 import { CiMenuBurger } from "react-icons/ci"
 import SearchBar from "./SearchBar"
-type Props = {
-  search: string
-  setSearch: (value: string) => void
-}
-export default function Navbar({ search, setSearch }: Props) {
+
+export default function Navbar() {
   const [open, setOpen] = useState(false)
   return (
     <nav className="w-full border-b bg-white shadow-sm">
@@ -18,7 +15,7 @@ export default function Navbar({ search, setSearch }: Props) {
           <FaGamepad className="text-indigo-600 text-2xl" />
           <span className="hidden md:inline">GameStore</span>
         </Link>
-        <SearchBar search={search} setSearch={setSearch} />
+        <SearchBar/>
         <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
           <Link href="/">Home</Link>
           <Link href="/games">Games</Link>
