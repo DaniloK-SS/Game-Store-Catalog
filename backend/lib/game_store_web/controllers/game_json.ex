@@ -20,11 +20,11 @@ defmodule GameStoreWeb.GameJSON do
       genre: game.genre,
       platform: game.platform,
       price: game.price,
-      release_year: game.release_year,
+      releaseYear: game.release_year,
       publisher: game.publisher,
-      cover_image: game.cover_image,
+      coverImage: game.cover_image,
       description: game.description,
-      in_stock: game.in_stock,
+      inStock: game.in_stock,
       featured: game.featured
     }
   end
