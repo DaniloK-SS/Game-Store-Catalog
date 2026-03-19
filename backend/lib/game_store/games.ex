@@ -59,4 +59,18 @@ defmodule GameStore.Games do
     |> Repo.insert()
   end
 
+  # Updates an existing game with the provided attributes.
+  # Returns {:ok, game} on success, {:error, changeset} on validation failure.
+  def update_game(%Game{} = game, attrs) do
+    game
+    |> Game.changeset(attrs)
+    |> Repo.update()
+  end
+
+  # Deletes a game from the database.
+  # Returns {:ok, game} on success.
+  def delete_game(%Game{} = game) do
+    Repo.delete(game)
+  end
+
 end
