@@ -3,6 +3,7 @@ defmodule GameStore.Games do
   alias GameStore.Games.Game
   import Ecto.Query
 
+
   def list_games(params \\ %{}) do
   Game
   |> filter_by_platform(params["platform"])
@@ -11,6 +12,7 @@ defmodule GameStore.Games do
   |> filter_by_search(params["search"])
   |> Repo.all()
   end
+
 
   defp filter_by_platform(query, nil), do: query
   defp filter_by_platform(query, platform) do
