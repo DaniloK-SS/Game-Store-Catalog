@@ -1,5 +1,5 @@
 defmodule GameStoreWeb.GameJSON do
-  import Ecto.Query
+
 
   def index(%{games: games}) do
     %{data: Enum.map(games, &game/1)}
