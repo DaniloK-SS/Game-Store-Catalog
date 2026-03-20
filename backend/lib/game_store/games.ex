@@ -73,4 +73,7 @@ defmodule GameStore.Games do
     Repo.delete(game)
   end
 
+  def change_game(%Game{} = game, attrs \\ %{}) do
+    Game.changeset(game, attrs)
+  end
 end

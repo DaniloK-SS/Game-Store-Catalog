@@ -10,6 +10,16 @@ defmodule GameStoreWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :admin do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, html: {GameStoreWeb.Layouts, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug GameStoreWeb.Plugs.RequireAdmin
+  end
+
   scope "/", GameStoreWeb do
     pipe_through :browser
 
@@ -49,4 +59,22 @@ defmodule GameStoreWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
+
+  scope "/admin", GameStoreWeb do
+      pipe_through :browser
+
+      get "/login", AdminSessionController, :new
+      post "/login", AdminSessionController, :create
+      delete "/logout", AdminSessionController, :delete
+  end
+
+  scope "/admin", GameStoreWeb do
+      pipe_through :admin
+
+      live "/games", AdminLive.Index, :index
+      live "/games/new", AdminLive.New, :new
+      live "/games/:id/edit", AdminLive.Edit, :edit
+  end
+
+
 end
