@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import games from "@/app/data/games.json"
 import GameGrid from "@/components/GameGrid"
-import EmptyState from "@/components/EmptyState"
+import EmptyWishlist from "@/components/EmptyWishList"
 
 const getWishlist = () => {
   const stringList = localStorage.getItem("wishlist")
@@ -28,7 +28,7 @@ export default function WishlistPage() {
     setWishlist(newWishlist)
     localStorage.setItem("wishlist", newWishlist.join(","))
   }
-  // po id filter
+
   const wishlistGames = games.filter(game =>
     wishlist.includes(game.id)
   )
@@ -41,16 +41,11 @@ export default function WishlistPage() {
       </h1>
 
       {wishlistGames.length === 0 ? (
-        <EmptyState
-          onClear={() => {
-            setWishlist([])
-            localStorage.removeItem("wishlist")
-          }}
-        />
+        <EmptyWishlist />
       ) : (
         <GameGrid
           games={wishlistGames}
-          onAddToWishlist={() => {}} // ne treba ovdje
+          onAddToWishlist={() => {}}
           onRemoveFromWishlist={handleRemoveFromWishlist}
           isInWishlist={(gameId) => isInWishlist(wishlist, gameId)}
         />

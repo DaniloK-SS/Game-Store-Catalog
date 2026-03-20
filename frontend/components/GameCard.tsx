@@ -47,7 +47,7 @@ export default function GameCard({ game, onAddToWishlist, isInWishlist, onRemove
          className={`mt-3 w-full flex items-center justify-center gap-2 
             py-2 rounded-md transition 
             ${inWishlist 
-              ? "bg-red-600 text-white hover:bg-red-700" 
+              ? "bg-gray-600 text-white hover:bg-gray-700" 
               : "bg-indigo-600 text-white hover:bg-indigo-700"
             }`}
         >
