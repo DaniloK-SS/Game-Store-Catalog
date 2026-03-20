@@ -7,13 +7,7 @@ type Props = { //tip ocekuje jedan game objekat
   onRemoveFromWishlist: (gameId:number) => void
 }
 export default function GameGrid({ games, onAddToWishlist, isInWishlist ,onRemoveFromWishlist}: Props) {
-  if (games.length === 0) {
-    return (
-      <p className="text-gray-500 text-center mt-10">
-        No games found.
-      </p>
-    )
-  }
+  
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
       {games.map((game) => (

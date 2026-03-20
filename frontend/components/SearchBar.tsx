@@ -1,20 +1,46 @@
 "use client"
-import { useRouter, useSearchParams } from "next/navigation"
-export default function SearchBar() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const search = searchParams.get("search") || ""
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-    router.push(`/games?search=${value}`)
+import { useState, useEffect } from "react"
+import { useSearch } from "@/components/SearchContext"
+import { FaSearch } from "react-icons/fa"
+
+export default function SearchBar() {
+  const { search, setSearch } = useSearch()
+  const [input, setInput] = useState("")
+  // 🔥 sync 
+  useEffect(() => {
+    setInput(search)
+  }, [search])
+  //  debounce (live search)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearch(input)
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [input, setSearch])
+
+  const handleSubmit = () => {
+    setSearch(input)
   }
   return (
-    <input
-      type="text"
-      placeholder="Search games..."
-      value={search}
-      onChange={handleChange}
-      className="w-full max-w-xs md:max-w-md mx-4 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+    <div className="flex items-center w-full max-w-xs md:max-w-md mx-4 border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500">
+
+      <input
+        type="text"
+        placeholder="Search games..."
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        className="w-full px-4 py-2 outline-none"
+      />
+
+      <button
+        onClick={handleSubmit}
+        className="px-4 text-gray-600 hover:text-indigo-600 transition"
+      >
+        <FaSearch />
+      </button>
+
+    </div>
   )
 }
