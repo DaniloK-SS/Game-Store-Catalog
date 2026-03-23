@@ -9,10 +9,10 @@ const getWishlist = () => {
   const stringList = localStorage.getItem("wishlist")
   return stringList?.split(",")
     .map(x => Number.parseInt(x.trim()))
-    .filter(num => Number.isFinite(num) && !Number.isNaN(num)) ?? []
+    .filter(num => Number.isFinite(num) && !Number.isNaN(num)) ?? [] //array brojeva[gameId]
 }
 
-const isInWishlist = (wishlist: number[], gameId: number) => {
+const isInWishlist = (wishlist: number[], gameId: number) => { //cuvam ID igrice
   return wishlist.some(id => id === gameId)
 }
 

@@ -75,7 +75,7 @@ export default function FilterPanel({
         </label>
       </div>
 
-      <button
+      <button // clear
         onClick={() => {
           setPlatform("")
           setGenre("")

@@ -28,7 +28,7 @@ export default function GamesPage() {
 
   useEffect(() => {
     setWishlist(getWishlist())
-  }, [])
+  }, []) //ucitavanje kad se stranica pokrene
 
   const handleAddToWishlist = (gameId: number) => {
     const newWishlist = wishlist.concat([gameId])

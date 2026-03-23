@@ -18,3 +18,4 @@ export function useSearch() {
   if (!context) throw new Error("useSearch must be used inside SearchProvider")
   return context
 }
+//morao bih navbaru da 5 puta dodavam prop search={search} setSearch={setSearch}

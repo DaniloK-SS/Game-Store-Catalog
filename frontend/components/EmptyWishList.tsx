@@ -1,12 +1,7 @@
 "use client"
-
-
 export default function EmptyWishlist() {
   return (
     <div className="flex flex-col items-center justify-center text-center py-24">
-
-      
-
       <h2 className="text-2xl font-bold text-gray-800 mb-2">
         Your wishlist is empty
       </h2>

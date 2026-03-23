@@ -1,7 +1,7 @@
 "use client"
 type Props = {
   sort: string
-  setSort: (value: string) => void
+  setSort: (value: string) => void //mjenja state,na vraca nista
 }
 
 export default function SortSelect({ sort, setSort }: Props) {

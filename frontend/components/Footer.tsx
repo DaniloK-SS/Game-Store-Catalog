@@ -1,5 +1,4 @@
 "use client"
-
 import { useState } from "react"
 import { FaInstagram } from "react-icons/fa6";
 import { CiFacebook } from "react-icons/ci";
@@ -16,9 +15,8 @@ const sections = [
 ]
 
 export default function Footer() {
-  const [open, setOpen] = useState<string | null>(null)
-
-  const toggle = (section: string) => {
+  const [open, setOpen] = useState <string | null>(null) //null nijedna nije otvorena
+  const toggle = (section: string) => { //klik na istu zatvara se,klik na drugu otvara se
     setOpen(open === section ? null : section)
   }
 
@@ -28,7 +26,6 @@ export default function Footer() {
       behavior: "smooth",
     })
   }
-
   return (
     <footer className="w-full bg-gray-50 mt-16 py-8 px-4 text-gray-600 border-t">
       <div className="max-w-5xl mx-auto">
