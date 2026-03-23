@@ -30,14 +30,14 @@ defmodule GameStore.Cloudinary do
     content_type_header = Multipart.content_type(multipart, "multipart/form-data")
 
     case Req.post(url,
-      headers: [
-        {"content-type", content_type_header},
-        {"content-length", to_string(content_length)}
-      ],
-      body: Multipart.body_stream(multipart),
-      receive_timeout: 120_000,
-      retry: false
-    ) do
+           headers: [
+             {"content-type", content_type_header},
+             {"content-length", to_string(content_length)}
+           ],
+           body: Multipart.body_stream(multipart),
+           receive_timeout: 120_000,
+           retry: false
+         ) do
       {:ok, %{status: 200, body: body}} ->
         {:ok, body["secure_url"]}
 
