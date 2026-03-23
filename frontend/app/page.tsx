@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import games from "@/app/data/games.json"
 import GameGrid from "@/components/GameGrid"
 import Show from "@/components/Show"
 import { useSearch } from "@/components/SearchContext"
 import EmptyState from "@/components/EmptyState"
+import { getGames } from "@/lib/GetGames"
 
 const getWishlist = () => {
   const stringList = localStorage.getItem("wishlist")
@@ -20,28 +20,47 @@ const isInWishlist = (wishlist: number[], gameId: number) => {
 
 export default function HomePage() {
   const { search, setSearch } = useSearch()
+
+  const [games, setGames] = useState<any[]>([])
   const [sort, setSort] = useState("new")
   const [wishlist, setWishlist] = useState<number[]>([])
   const [i, setI] = useState(0)
 
-  const featured = games.filter(g => g.featured).slice(0, 5)
-
+  // FETCH
   useEffect(() => {
+    async function fetchData() {
+      const data = await getGames()
+      console.log("API RESPONSE:", data)
+      const parsedGames = Array.isArray(data)
+        ? data
+        : data?.data || data?.games || []
+
+      setGames(parsedGames) 
+    }
+
+    fetchData()
     setWishlist(getWishlist())
   }, [])
+
+  const featured = games.filter(g => g.featured).slice(0, 5)
+
   const handleAddToWishlist = (gameId: number) => {
-    const newWishlist = wishlist.concat([gameId])
+    if (wishlist.includes(gameId)) return
+
+    const newWishlist = [...wishlist, gameId]
     setWishlist(newWishlist)
     localStorage.setItem("wishlist", newWishlist.join(","))
   }
+
   const handleRemoveFromWishlist = (gameId: number) => {
     const newWishlist = wishlist.filter(gid => gid !== gameId)
     setWishlist(newWishlist)
     localStorage.setItem("wishlist", newWishlist.join(","))
   }
+
   const filteredGames = games
     .filter(g =>
-      g.title.toLowerCase().includes(search.toLowerCase())
+      g.title?.toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       if (sort === "new") {
@@ -53,6 +72,7 @@ export default function HomePage() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
+
       <h2 className="text-2xl font-bold mb-6">Featured Games</h2>
 
       <div className="relative h-90 rounded-2xl overflow-hidden group shadow-xl mb-6">
@@ -77,12 +97,14 @@ export default function HomePage() {
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/20 transition">
           ◀
         </button>
+
         <button
           onClick={() => setI(i === featured.length - 1 ? 0 : i + 1)}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/20 transition">
           ▶
         </button>
       </div>
+
       <div className="flex justify-center mb-6 gap-2">
         {featured.map((_, index) => (
           <div
@@ -93,17 +115,18 @@ export default function HomePage() {
           />
         ))}
       </div>
+
       <div className="text-center my-16 px-4">
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
           Discover <br /> Something New
         </h2>
-
         <p className="mt-6 text-lg text-gray-600 max-w-xl mx-auto">
           Check out new and upcoming games on the Games Store. 🎮
         </p>
-
       </div>
-        <Show sort={sort} setSort={setSort} />
+
+      <Show sort={sort} setSort={setSort} />
+
       <div className="mt-10">
         {filteredGames.length === 0 ? (
           <EmptyState
