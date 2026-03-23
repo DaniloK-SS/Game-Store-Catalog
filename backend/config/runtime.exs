@@ -33,6 +33,12 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
+  config :game_store, :cloudinary,
+    cloud_name: System.get_env("CLOUDINARY_CLOUD_NAME"),
+    api_key: System.get_env("CLOUDINARY_API_KEY"),
+    api_secret: System.get_env("CLOUDINARY_API_SECRET"),
+    upload_preset: System.get_env("CLOUDINARY_UPLOAD_PRESET")
+
   config :game_store, GameStore.Repo,
     url: database_url,
     ssl: [verify: :verify_none],

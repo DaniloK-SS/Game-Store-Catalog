@@ -16,8 +16,10 @@ games = [
     price: Decimal.new("39.99"),
     release_year: 2024,
     publisher: "North Pixel",
-    cover_image: "https://static.icy-veins.com/wp/wp-content/uploads/2025/11/horizon-steel-frontiers.webp",
-    description: "A fast-paced action game set in a futuristic city filled with advanced technology and dangerous enemies.",
+    cover_image:
+      "https://static.icy-veins.com/wp/wp-content/uploads/2025/11/horizon-steel-frontiers.webp",
+    description:
+      "A fast-paced action game set in a futuristic city filled with advanced technology and dangerous enemies.",
     in_stock: true,
     featured: true
   },
@@ -28,8 +30,10 @@ games = [
     price: Decimal.new("59.99"),
     release_year: 2023,
     publisher: "DarkForge Studios",
-    cover_image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/387450/header.jpg?t=1447377116",
-    description: "An epic fantasy RPG where players explore mysterious lands and battle powerful creatures.",
+    cover_image:
+      "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/387450/header.jpg?t=1447377116",
+    description:
+      "An epic fantasy RPG where players explore mysterious lands and battle powerful creatures.",
     in_stock: true,
     featured: true
   },
@@ -40,7 +44,8 @@ games = [
     price: Decimal.new("29.99"),
     release_year: 2022,
     publisher: "Speedline Games",
-    cover_image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4078430/3c44afd74567d593c23049525c1b0376ae80e287/capsule_616x353.jpg?t=1773076074",
+    cover_image:
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4078430/3c44afd74567d593c23049525c1b0376ae80e287/capsule_616x353.jpg?t=1773076074",
     description: "Race across futuristic planets in this high-speed sci-fi racing experience.",
     in_stock: true,
     featured: false
@@ -52,8 +57,10 @@ games = [
     price: Decimal.new("49.99"),
     release_year: 2024,
     publisher: "Neon Studios",
-    cover_image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3197540/header.jpg?t=1736030080",
-    description: "A cyberpunk adventure game where you uncover secrets hidden in a neon-lit city.",
+    cover_image:
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3197540/header.jpg?t=1736030080",
+    description:
+      "A cyberpunk adventure game where you uncover secrets hidden in a neon-lit city.",
     in_stock: true,
     featured: true
   },
@@ -64,7 +71,8 @@ games = [
     price: Decimal.new("44.99"),
     release_year: 2023,
     publisher: "ArenaWorks",
-    cover_image: "https://c4.wallpaperflare.com/wallpaper/258/925/224/action-arena-arts-battle-wallpaper-preview.jpg",
+    cover_image:
+      "https://c4.wallpaperflare.com/wallpaper/258/925/224/action-arena-arts-battle-wallpaper-preview.jpg",
     description: "Compete in intense multiplayer battles in a futuristic arena.",
     in_stock: false,
     featured: false
@@ -76,7 +84,8 @@ games = [
     price: Decimal.new("54.99"),
     release_year: 2022,
     publisher: "Fantasy Labs",
-    cover_image: "https://cf.geekdo-images.com/a8vBlOlMCf4p-nPIkOEh3g__opengraph/img/ozE9JTE5B6Dt0hhb6fIy1q8SiZ8=/0x0:3506x1841/fit-in/1200x630/filters:strip_icc()/pic9193406.png",
+    cover_image:
+      "https://cf.geekdo-images.com/a8vBlOlMCf4p-nPIkOEh3g__opengraph/img/ozE9JTE5B6Dt0hhb6fIy1q8SiZ8=/0x0:3506x1841/fit-in/1200x630/filters:strip_icc()/pic9193406.png",
     description: "Explore magical kingdoms, complete quests, and discover hidden treasures.",
     in_stock: true,
     featured: false
@@ -101,7 +110,8 @@ games = [
     release_year: 2023,
     publisher: "Nightmare Studios",
     cover_image: "https://wallpaperaccess.com/full/7862874.jpg",
-    description: "Survive a terrifying zombie apocalypse and uncover the truth behind the outbreak.",
+    description:
+      "Survive a terrifying zombie apocalypse and uncover the truth behind the outbreak.",
     in_stock: false,
     featured: false
   },
@@ -136,7 +146,8 @@ games = [
     price: Decimal.new("14.99"),
     release_year: 2021,
     publisher: "Brainy Games",
-    cover_image: "https://img.freepik.com/premium-photo/picture-person-s-head-with-puzzle-pieces-shape-brain-generative-ai_97167-9425.jpg",
+    cover_image:
+      "https://img.freepik.com/premium-photo/picture-person-s-head-with-puzzle-pieces-shape-brain-generative-ai_97167-9425.jpg",
     description: "Challenge your brain with complex puzzles and mind-bending challenges.",
     in_stock: true,
     featured: false
@@ -148,7 +159,8 @@ games = [
     price: Decimal.new("34.99"),
     release_year: 2023,
     publisher: "WildCraft Studios",
-    cover_image: "https://images.wallpapersden.com/image/download/survival-island-evo-pro_a2lsbGmUmZqaraWkpJRqaGllrWhlZW0.jpg",
+    cover_image:
+      "https://images.wallpapersden.com/image/download/survival-island-evo-pro_a2lsbGmUmZqaraWkpJRqaGllrWhlZW0.jpg",
     description: "Survive on a deserted island by crafting tools and building shelters.",
     in_stock: true,
     featured: false

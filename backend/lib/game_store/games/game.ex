@@ -19,15 +19,26 @@ defmodule GameStore.Games.Game do
 
   @doc false
   def changeset(game, attrs) do
-  game
-  |> cast(attrs, [
-    :title, :genre, :platform, :price,
-    :release_year, :publisher, :cover_image,
-    :description, :in_stock, :featured
-  ])
-  |> validate_required([
-    :title, :genre, :platform, :price,
-    :release_year, :publisher
-  ])
-end
+    game
+    |> cast(attrs, [
+      :title,
+      :genre,
+      :platform,
+      :price,
+      :release_year,
+      :publisher,
+      :cover_image,
+      :description,
+      :in_stock,
+      :featured
+    ])
+    |> validate_required([
+      :title,
+      :genre,
+      :platform,
+      :price,
+      :release_year,
+      :publisher
+    ])
+  end
 end

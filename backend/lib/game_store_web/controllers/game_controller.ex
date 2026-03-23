@@ -41,44 +41,43 @@ defmodule GameStoreWeb.GameController do
     end
   end
 
-# Deletes a game by ID.
-# Responds with 404 if the game does not exist.
-# Responds with 200 and the deleted game on success.
-def delete(conn, %{"id" => id}) do
-  case Games.get_game(id) do
-    {:ok, game} ->
-      Games.delete_game(game)
-      render(conn, :show, game: game)
+  # Deletes a game by ID.
+  # Responds with 404 if the game does not exist.
+  # Responds with 200 and the deleted game on success.
+  def delete(conn, %{"id" => id}) do
+    case Games.get_game(id) do
+      {:ok, game} ->
+        Games.delete_game(game)
+        render(conn, :show, game: game)
 
-    {:error, :not_found} ->
-      conn
-      |> put_status(:not_found)
-      |> render(:error, message: "Game not found")
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> render(:error, message: "Game not found")
+    end
   end
-end
 
-# Updates a game by ID with the provided fields.
-# Responds with 404 if the game does not exist.
-# Responds with 400 if validation fails.
-# Responds with 200 and the updated game on success.
-def update(conn, %{"id" => id, "game" => game_params}) do
-  case Games.get_game(id) do
-    {:ok, game} ->
-      case Games.update_game(game, game_params) do
-        {:ok, updated_game} ->
-          render(conn, :show, game: updated_game)
+  # Updates a game by ID with the provided fields.
+  # Responds with 404 if the game does not exist.
+  # Responds with 400 if validation fails.
+  # Responds with 200 and the updated game on success.
+  def update(conn, %{"id" => id, "game" => game_params}) do
+    case Games.get_game(id) do
+      {:ok, game} ->
+        case Games.update_game(game, game_params) do
+          {:ok, updated_game} ->
+            render(conn, :show, game: updated_game)
 
-        {:error, _changeset} ->
-          conn
-          |> put_status(:bad_request)
-          |> render(:error, message: "Invalid game data")
-      end
+          {:error, _changeset} ->
+            conn
+            |> put_status(:bad_request)
+            |> render(:error, message: "Invalid game data")
+        end
 
-    {:error, :not_found} ->
-      conn
-      |> put_status(:not_found)
-      |> render(:error, message: "Game not found")
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> render(:error, message: "Game not found")
+    end
   end
-end
-
 end

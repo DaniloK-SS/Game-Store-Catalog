@@ -4,7 +4,7 @@
 
     <%= if Phoenix.Flash.get(@flash, :error) do %>
       <p class="text-red-500 text-sm mb-4">
-        <%= Phoenix.Flash.get(@flash, :error) %>
+        {Phoenix.Flash.get(@flash, :error)}
       </p>
     <% end %>
 

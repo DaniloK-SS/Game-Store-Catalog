@@ -61,20 +61,18 @@ defmodule GameStoreWeb.Router do
   end
 
   scope "/admin", GameStoreWeb do
-      pipe_through :browser
+    pipe_through :browser
 
-      get "/login", AdminSessionController, :new
-      post "/login", AdminSessionController, :create
-      delete "/logout", AdminSessionController, :delete
+    get "/login", AdminSessionController, :new
+    post "/login", AdminSessionController, :create
+    delete "/logout", AdminSessionController, :delete
   end
 
   scope "/admin", GameStoreWeb do
-      pipe_through :admin
+    pipe_through :admin
 
-      live "/games", AdminLive.Index, :index
-      live "/games/new", AdminLive.New, :new
-      live "/games/:id/edit", AdminLive.Edit, :edit
+    live "/games", AdminLive.Index, :index
+    live "/games/new", AdminLive.New, :new
+    live "/games/:id/edit", AdminLive.Edit, :edit
   end
-
-
 end
