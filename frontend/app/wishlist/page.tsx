@@ -7,7 +7,6 @@ import { getGames } from "@/lib/GetGames"
 
 const getWishlist = () => {
   const stringList = localStorage.getItem("wishlist")
-
   return stringList?.split(",")
     .map(x => Number(x.trim())) // ✅ uvijek number
     .filter(num => !isNaN(num)) ?? []

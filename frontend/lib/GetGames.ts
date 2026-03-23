@@ -1,16 +1,22 @@
-export async function getGames() {
-  try {
-    const res = await fetch("https://game-store-catalog.onrender.com/api/games", {
-      cache: "no-store",
-    })
+export async function getGames(params?: {
+  search?: string
+  platform?: string
+  genre?: string
+  inStock?: boolean
+  sort?: string
+}) {
+  const query = new URLSearchParams()
 
-    if (!res.ok) throw new Error("Failed to fetch")
+  if (params?.search) query.append("search", params.search)
+  if (params?.platform) query.append("platform", params.platform)
+  if (params?.genre) query.append("genre", params.genre)
+  if (params?.inStock) query.append("inStock", "true")
+  if (params?.sort) query.append("sort", params.sort)
 
-    const data = await res.json()
+  const res = await fetch(
+    `https://game-store-catalog.onrender.com/api/games?${query.toString()}`,
+    { cache: "no-store" }
+  )
 
-    return data.data // uzima api []
-  } catch (error) {
-    console.error("API error:", error)
-    return []
-  }
+  return res.json()
 }
