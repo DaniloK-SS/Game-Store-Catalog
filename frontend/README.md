@@ -22,6 +22,8 @@ The application includes the following functionality:
 * Sort games by price, title, or release year
 * View a detailed page for each game
 * Handle empty results when filters return no games
+* Responsive design (mobile + desktop)
+* Wishlist system (stored in localStorage)
 
 Technologies Used(frontend Danilo)
 
@@ -44,6 +46,11 @@ Route:
 app/games/[id]
 # This page displays detailed information about a specific game.
 
+Wishlist
+route:
+app/wishlist
+# This page display the wishlist.
+
 # Components
 GameCard
 route:
@@ -65,14 +72,17 @@ Navbar
 route:
 components/Navbar.tsx
 # provides the main navigation for the application.
-Badge
+EmptyState
 route:
-components/Badge.tsx
+components/EmptyState.tsx
 # used to display small status indicators
 SortSelect
 route:
 components/SortSelect.tsx
 # provides sorting options for the games list
+EmptyWishlist.tsx
+route:
+components/EmptyWishlist.tsx.
 
 * ----------Application Logic---------- 
 
@@ -97,3 +107,9 @@ This project focuses on practicing core frontend development concepts such as:
 * combining multiple filters
 * sorting collections
 * dynamic routing with Next.js
+ # Notes
+- Wishlist is implemented using **localStorage**
+- Focus is on UI logic and component architecture
+
+- 👨‍💻 Author
+Frontend: **Danilo**
