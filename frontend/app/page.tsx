@@ -26,16 +26,21 @@ export default function HomePage() {
   const [wishlist, setWishlist] = useState<number[]>([])
   const [i, setI] = useState(0)
 
-  // FETCH
   useEffect(() => {
     async function fetchData() {
       const data = await getGames()
-      console.log("API RESPONSE:", data)
+
       const parsedGames = Array.isArray(data)
         ? data
         : data?.data || data?.games || []
 
-      setGames(parsedGames) 
+      const normalizedGames = parsedGames.map((g: any) => ({
+        ...g,
+        id: Number(g.id),
+        price: Number(g.price),
+      }))
+
+      setGames(normalizedGames)
     }
 
     fetchData()
@@ -63,10 +68,25 @@ export default function HomePage() {
       g.title?.toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
-      if (sort === "new") {
-        return b.releaseYear - a.releaseYear
-      } else {
-        return a.releaseYear - b.releaseYear
+      switch (sort) {
+        case "new":
+        case "newest":
+          return b.releaseYear - a.releaseYear
+
+        case "old":
+          return a.releaseYear - b.releaseYear
+
+        case "priceLow":
+          return a.price - b.price
+
+        case "priceHigh":
+          return b.price - a.price
+
+        case "title":
+          return a.title.localeCompare(b.title)
+
+        default:
+          return 0
       }
     })
 
