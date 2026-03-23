@@ -19,7 +19,13 @@ export default function GamesPage() {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await getGames()
+      const data = await getGames({
+        search,
+        platform,
+        genre,
+        inStock,
+        sort,
+      })
 
       const parsedGames = Array.isArray(data)
         ? data
@@ -34,12 +40,14 @@ export default function GamesPage() {
       setGames(normalizedGames)
     }
 
+    fetchData()
+  }, [search, platform, genre, inStock, sort])
+
+  useEffect(() => {
     const stored = localStorage.getItem("wishlist")
     if (stored) {
       setWishlist(stored.split(",").map(Number))
     }
-
-    fetchData()
   }, [])
 
   const isInWishlist = (id: number) => {
@@ -58,46 +66,6 @@ export default function GamesPage() {
     setWishlist(updated)
     localStorage.setItem("wishlist", updated.join(","))
   }
-
-  const filteredGames = games
-    .filter((game) => {
-      const matchesSearch = game.title
-        ?.toLowerCase()
-        .includes(search.toLowerCase())
-
-      const matchesPlatform = platform
-        ? game.platform === platform
-        : true
-
-      const matchesGenre = genre
-        ? game.genre === genre
-        : true
-
-      const matchesStock = inStock
-        ? game.inStock === true
-        : true
-
-      return (
-        matchesSearch &&
-        matchesPlatform &&
-        matchesGenre &&
-        matchesStock
-      )
-    })
-    .sort((a, b) => {
-      switch (sort) {
-        case "priceLow":
-          return a.price - b.price
-        case "priceHigh":
-          return b.price - a.price
-        case "newest":
-          return b.releaseYear - a.releaseYear
-        case "title":
-          return a.title.localeCompare(b.title)
-        default:
-          return 0
-      }
-    })
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -123,7 +91,7 @@ export default function GamesPage() {
 
         <div className="md:col-span-3">
 
-          {filteredGames.length === 0 ? (
+          {games.length === 0 ? (
             <EmptyState
               onClear={() => {
                 setPlatform("")
@@ -135,7 +103,7 @@ export default function GamesPage() {
             />
           ) : (
             <GameGrid
-              games={filteredGames}
+              games={games}
               isInWishlist={isInWishlist}
               onAddToWishlist={handleAddToWishlist}
               onRemoveFromWishlist={handleRemoveFromWishlist}
