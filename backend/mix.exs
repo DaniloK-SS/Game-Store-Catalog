@@ -66,7 +66,9 @@ defmodule GameStore.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      {:mime, "~> 2.0"},
+      {:multipart, "~> 0.4"}
     ]
   end
 

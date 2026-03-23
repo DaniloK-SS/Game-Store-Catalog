@@ -29,7 +29,6 @@ defmodule GameStoreWeb.AdminLive.Index do
   def render(assigns) do
     ~H"""
     <div class="max-w-6xl mx-auto p-8">
-
       <%!-- Header --%>
       <div class="flex items-center justify-between mb-8">
         <div>
@@ -62,7 +61,7 @@ defmodule GameStoreWeb.AdminLive.Index do
       <%!-- Flash message --%>
       <%= if Phoenix.Flash.get(@flash, :info) do %>
         <div class="mb-4 p-3 bg-green-50 text-green-700 rounded text-sm">
-          <%= Phoenix.Flash.get(@flash, :info) %>
+          {Phoenix.Flash.get(@flash, :info)}
         </div>
       <% end %>
 
@@ -85,12 +84,12 @@ defmodule GameStoreWeb.AdminLive.Index do
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
                     <img src={game.cover_image} class="w-10 h-10 rounded object-cover" />
-                    <span class="font-medium text-gray-900"><%= game.title %></span>
+                    <span class="font-medium text-gray-900">{game.title}</span>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-gray-600"><%= game.genre %></td>
-                <td class="px-6 py-4 text-gray-600"><%= game.platform %></td>
-                <td class="px-6 py-4 text-gray-600">$<%= game.price %></td>
+                <td class="px-6 py-4 text-gray-600">{game.genre}</td>
+                <td class="px-6 py-4 text-gray-600">{game.platform}</td>
+                <td class="px-6 py-4 text-gray-600">${game.price}</td>
                 <td class="px-6 py-4">
                   <%= if game.in_stock do %>
                     <span class="text-green-600 font-medium">In Stock</span>
@@ -121,7 +120,6 @@ defmodule GameStoreWeb.AdminLive.Index do
           </tbody>
         </table>
       </div>
-
     </div>
     """
   end

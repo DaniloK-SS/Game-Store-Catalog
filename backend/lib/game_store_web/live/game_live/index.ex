@@ -47,7 +47,6 @@ defmodule GameStoreWeb.GameLive.Index do
   def render(assigns) do
     ~H"""
     <div class="flex min-h-screen bg-white">
-
       <%!-- Filters Sidebar --%>
       <aside class="w-64 p-6 border-r border-gray-200 shrink-0">
         <h2 class="text-lg font-semibold mb-4 pb-2 border-b border-gray-200">Filters Panel</h2>
@@ -89,8 +88,7 @@ defmodule GameStoreWeb.GameLive.Index do
                 name="in_stock"
                 value="true"
                 checked={@in_stock == "true"}
-              />
-              In Stock Only
+              /> In Stock Only
             </label>
           </div>
 
@@ -110,7 +108,6 @@ defmodule GameStoreWeb.GameLive.Index do
 
       <%!-- Main Content --%>
       <main class="flex-1 p-8">
-
         <%!-- Featured Section --%>
         <section class="mb-8">
           <h1 class="text-2xl font-bold mb-4">Featured Games</h1>
@@ -120,8 +117,8 @@ defmodule GameStoreWeb.GameLive.Index do
                 <div class="relative rounded-lg overflow-hidden h-48 cursor-pointer">
                   <img src={game.cover_image} class="w-full h-full object-cover" />
                   <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                    <p class="text-white font-semibold"><%= game.title %></p>
-                    <p class="text-gray-300 text-sm"><%= game.genre %> / <%= game.platform %></p>
+                    <p class="text-white font-semibold">{game.title}</p>
+                    <p class="text-gray-300 text-sm">{game.genre} / {game.platform}</p>
                   </div>
                 </div>
               </.link>
@@ -137,10 +134,10 @@ defmodule GameStoreWeb.GameLive.Index do
                 <div class="bg-white rounded-lg shadow border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
                   <img src={game.cover_image} class="w-full h-48 object-cover" />
                   <div class="p-4">
-                    <h3 class="font-semibold text-gray-900"><%= game.title %></h3>
-                    <p class="text-sm text-gray-500"><%= game.genre %></p>
-                    <p class="text-sm text-gray-500"><%= game.platform %></p>
-                    <p class="text-lg font-bold text-gray-900 mt-2">$<%= game.price %></p>
+                    <h3 class="font-semibold text-gray-900">{game.title}</h3>
+                    <p class="text-sm text-gray-500">{game.genre}</p>
+                    <p class="text-sm text-gray-500">{game.platform}</p>
+                    <p class="text-lg font-bold text-gray-900 mt-2">${game.price}</p>
                     <%= if game.in_stock do %>
                       <p class="text-sm text-green-600 font-medium">In Stock</p>
                     <% else %>
@@ -152,7 +149,6 @@ defmodule GameStoreWeb.GameLive.Index do
             <% end %>
           </div>
         </section>
-
       </main>
     </div>
     """

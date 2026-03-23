@@ -1,6 +1,4 @@
 defmodule GameStoreWeb.GameJSON do
-
-
   def index(%{games: games}) do
     %{data: Enum.map(games, &game/1)}
   end

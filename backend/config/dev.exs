@@ -92,3 +92,9 @@ config :phoenix_live_view,
 config :swoosh, :api_client, false
 
 config :game_store, :admin_password, "admin123"
+
+config :game_store, :cloudinary,
+  cloud_name: "dnq35ub8e",
+  api_key: "119494591261461",
+  api_secret: "j8Uw0KmxLkibYD0gQVWkVxvz-Vo",
+  upload_preset: "default_g_store"

@@ -17,6 +17,7 @@ defmodule GameStore.Games do
   # Passes the query through unchanged if no platform filter is provided.
   # Otherwise filters games by exact platform match.
   defp filter_by_platform(query, nil), do: query
+
   defp filter_by_platform(query, platform) do
     where(query, [g], g.platform == ^platform)
   end
@@ -24,6 +25,7 @@ defmodule GameStore.Games do
   # Passes the query through unchanged if no genre filter is provided.
   # Otherwise filters games by exact genre match.
   defp filter_by_genre(query, nil), do: query
+
   defp filter_by_genre(query, genre) do
     where(query, [g], g.genre == ^genre)
   end
@@ -31,6 +33,7 @@ defmodule GameStore.Games do
   # Passes the query through unchanged if no in_stock filter is provided.
   # Converts the "true"/"false" string from query params to a boolean.
   defp filter_by_stock(query, nil), do: query
+
   defp filter_by_stock(query, in_stock) do
     where(query, [g], g.in_stock == ^(in_stock == "true"))
   end
@@ -38,6 +41,7 @@ defmodule GameStore.Games do
   # Passes the query through unchanged if no search term is provided.
   # Otherwise does a case-insensitive title search using ILIKE.
   defp filter_by_search(query, nil), do: query
+
   defp filter_by_search(query, search) do
     where(query, [g], ilike(g.title, ^"%#{search}%"))
   end
