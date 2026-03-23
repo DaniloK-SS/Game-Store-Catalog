@@ -1,16 +1,29 @@
 import GameCard from "./GameCard"
 import { Game } from "../app/types/game"
-type Props = { //tip ocekuje jedan game objekat
+
+type Props = {
   games: Game[];
-  isInWishlist: (gameId:number) => boolean,
-  onAddToWishlist: (gameId:number) => void
-  onRemoveFromWishlist: (gameId:number) => void
+  isInWishlist?: (gameId: number) => boolean;
+  onAddToWishlist?: (gameId: number) => void;
+  onRemoveFromWishlist?: (gameId: number) => void;
 }
-export default function GameGrid({ games, onAddToWishlist, isInWishlist ,onRemoveFromWishlist}: Props) {
+
+export default function GameGrid({
+  games,
+  onAddToWishlist,
+  isInWishlist,
+  onRemoveFromWishlist
+}: Props) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {games.map((game) => (
-        <GameCard key={game.id} game={game} onAddToWishlist={onAddToWishlist} isInWishlist={isInWishlist} onRemoveFromWishlist={onRemoveFromWishlist} />
+        <GameCard
+          key={game.id}
+          game={game}
+          onAddToWishlist={onAddToWishlist || (() => {})}
+          onRemoveFromWishlist={onRemoveFromWishlist || (() => {})}
+          isInWishlist={isInWishlist || (() => false)}
+        />
       ))}
     </div>
   )

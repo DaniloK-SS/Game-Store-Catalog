@@ -1,51 +1,68 @@
 "use client"
+
 import { useEffect, useState } from "react"
-import games from "@/app/data/games.json"
 import GameGrid from "@/components/GameGrid"
 import FilterPanel from "@/components/FilterPanel"
 import { useSearch } from "@/components/SearchContext"
 import EmptyState from "@/components/EmptyState"
-
-const getWishlist = () => {
-  const stringList = localStorage.getItem("wishlist")
-  return stringList?.split(",")
-    .map(x => Number.parseInt(x.trim()))
-    .filter(num => Number.isFinite(num) && !Number.isNaN(num)) ?? []
-}
-
-const isInWishlist = (wishlist: number[], gameId: number) => {
-  return wishlist.some(id => id === gameId)
-}
+import { getGames } from "@/lib/GetGames"
 
 export default function GamesPage() {
   const { search, setSearch } = useSearch()
 
-  const [wishlist, setWishlist] = useState<number[]>([])
+  const [games, setGames] = useState<any[]>([])
   const [platform, setPlatform] = useState("")
   const [genre, setGenre] = useState("")
   const [inStock, setInStock] = useState(false)
   const [sort, setSort] = useState("")
+  const [wishlist, setWishlist] = useState<number[]>([])
 
   useEffect(() => {
-    setWishlist(getWishlist())
-  }, []) //ucitavanje kad se stranica pokrene
+    async function fetchData() {
+      const data = await getGames()
 
-  const handleAddToWishlist = (gameId: number) => {
-    const newWishlist = wishlist.concat([gameId])
-    setWishlist(newWishlist)
-    localStorage.setItem("wishlist", newWishlist.join(","))
+      const parsedGames = Array.isArray(data)
+        ? data
+        : data?.data || []
+
+      const normalizedGames = parsedGames.map((g: any) => ({
+        ...g,
+        id: Number(g.id),
+        price: Number(g.price),
+      }))
+
+      setGames(normalizedGames)
+    }
+
+    const stored = localStorage.getItem("wishlist")
+    if (stored) {
+      setWishlist(stored.split(",").map(Number))
+    }
+
+    fetchData()
+  }, [])
+
+  const isInWishlist = (id: number) => {
+    return wishlist.includes(id)
   }
 
-  const handleRemoveFromWishlist = (gameId: number) => {
-    const newWishlist = wishlist.filter(id => id !== gameId)
-    setWishlist(newWishlist)
-    localStorage.setItem("wishlist", newWishlist.join(","))
+  const handleAddToWishlist = (id: number) => {
+    if (wishlist.includes(id)) return
+    const updated = [...wishlist, id]
+    setWishlist(updated)
+    localStorage.setItem("wishlist", updated.join(","))
+  }
+
+  const handleRemoveFromWishlist = (id: number) => {
+    const updated = wishlist.filter(w => w !== id)
+    setWishlist(updated)
+    localStorage.setItem("wishlist", updated.join(","))
   }
 
   const filteredGames = games
     .filter((game) => {
       const matchesSearch = game.title
-        .toLowerCase()
+        ?.toLowerCase()
         .includes(search.toLowerCase())
 
       const matchesPlatform = platform
@@ -119,9 +136,9 @@ export default function GamesPage() {
           ) : (
             <GameGrid
               games={filteredGames}
+              isInWishlist={isInWishlist}
               onAddToWishlist={handleAddToWishlist}
               onRemoveFromWishlist={handleRemoveFromWishlist}
-              isInWishlist={(gameId) => isInWishlist(wishlist, gameId)}
             />
           )}
 
