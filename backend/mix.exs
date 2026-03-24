@@ -68,7 +68,8 @@ defmodule GameStore.MixProject do
       {:bandit, "~> 1.5"},
       {:cors_plug, "~> 3.0"},
       {:mime, "~> 2.0"},
-      {:multipart, "~> 0.4"}
+      {:multipart, "~> 0.4"},
+      {:bcrypt_elixir, "~> 3.0"}
     ]
   end
 
