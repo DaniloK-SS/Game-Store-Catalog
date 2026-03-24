@@ -1,30 +1,33 @@
 defmodule GameStoreWeb.AdminSessionController do
   use GameStoreWeb, :controller
 
-  # Renders the login form.
+
   def new(conn, _params) do
     render(conn, :new)
   end
 
-  # Handles the login form submission.
-  # Compares the submitted password against the one in config.
-  # On success — sets the admin session flag and redirects to the admin panel.
-  # On failure — re-renders the login form with an error message.
-  def create(conn, %{"password" => password}) do
-    admin_password = Application.get_env(:game_store, :admin_password)
 
-    if password == admin_password do
-      conn
-      |> put_session(:admin, true)
-      |> redirect(to: "/admin/games")
-    else
-      conn
-      |> put_flash(:error, "Invalid password")
-      |> render(:new)
+  def create(conn, %{"email" => email, "password" => password}) do
+    case GameStore.Accounts.authenticate_user(email, password) do
+      {:ok, user} ->
+        if user.role == "admin" do
+          conn
+          |> put_session(:user_id, user.id)
+          |> redirect(to: "/admin/games")
+        else
+          conn
+          |> put_flash(:error, "Invalid credentials.")
+          |> render(:new)
+        end
+
+      {:error, :invalid_credentials} ->
+        conn
+        |> put_flash(:error, "Invalid credentials.")
+        |> render(:new)
     end
   end
 
-  # Clears the admin session and redirects to the login page.
+  # Clears the session and redirects to the login page.
   def delete(conn, _params) do
     conn
     |> clear_session()
