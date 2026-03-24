@@ -20,7 +20,6 @@ const isInWishlist = (wishlist: number[], gameId: number) => {
 
 export default function HomePage() {
   const { search, setSearch } = useSearch()
-
   const [games, setGames] = useState<any[]>([])
   const [sort, setSort] = useState("new")
   const [wishlist, setWishlist] = useState<number[]>([])
