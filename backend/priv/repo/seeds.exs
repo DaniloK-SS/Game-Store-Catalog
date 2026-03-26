@@ -167,4 +167,31 @@ Enum.each(games, fn attrs ->
   end
 end)
 
+# Re-deploys may attempt to create the same admin users again.
+# If a user already exists, create_user/1 will return an error
+# and we log it as skipped.
+admin_accounts = [
+  {
+    System.get_env("STEFAN_EMAIL"),
+    System.get_env("STEFAN_PASSWORD")
+  },
+  {
+    System.get_env("DANILO_EMAIL"),
+    System.get_env("DANILO_PASSWORD")
+  }
+]
+
+for {email, password} <- admin_accounts do
+  if email && password do
+    case GameStore.Accounts.create_user(%{
+      email: email,
+      password: password,
+      role: "admin"
+    }) do
+      {:ok, user} -> IO.puts("Created admin: #{user.email}")
+      {:error, changeset} -> IO.puts("Skipped #{email}: #{inspect(changeset.errors)}")
+    end
+  end
+end
+
 IO.puts("=== Seed Finished Successfully ===")
