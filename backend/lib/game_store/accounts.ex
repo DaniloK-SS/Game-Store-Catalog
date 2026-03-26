@@ -1,6 +1,7 @@
 defmodule GameStore.Accounts do
   alias GameStore.Repo
   alias GameStore.Accounts.User
+  alias GameStore.Accounts.Token
 
   @doc """
   Creates a new user with a hashed password.
@@ -47,5 +48,58 @@ defmodule GameStore.Accounts do
   """
   def get_user(id) do
     Repo.get(User, id)
+  end
+
+    @doc """
+  Creates a token for the given user.
+  Generates a random URL-safe string, stores it in the
+  database linked to the user, and returns it.
+  This token is what gets sent back to the client after login.
+  """
+  def create_token(user) do
+    token_value = :crypto.strong_rand_bytes(32) |> Base.url_encode64(padding: false)
+
+    %Token{}
+    |> Ecto.Changeset.change(%{token: token_value, user_id: user.id})
+    |> Repo.insert()
+  end
+
+  def get_user_by_token(nil), do: {:error, :unauthorized}
+
+  @doc """
+  Looks up a token and returns the associated user.
+  This runs on every authenticated API request.
+  Returns {:ok, user} if the token exists and the user is an admin.
+  Returns {:error, :unauthorized} otherwise.
+  """
+  def get_user_by_token(token_value) do
+    token = Repo.get_by(Token, token: token_value)
+
+    case token do
+      nil ->
+        {:error, :unauthorized}
+
+      token ->
+        user = Repo.get(User, token.user_id)
+
+        if user && user.role == "admin" do
+          {:ok, user}
+        else
+          {:error, :unauthorized}
+        end
+    end
+  end
+
+  @doc """
+  Deletes a token by its value.
+  Called on logout — after this the token is gone
+  and can never be used again.
+  """
+  def delete_token(token_value) do
+    case Repo.get_by(Token, token: token_value) do
+      nil -> :ok
+      token -> Repo.delete(token)
+                :ok
+    end
   end
 end
