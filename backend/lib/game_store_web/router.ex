@@ -59,6 +59,9 @@ defmodule GameStoreWeb.Router do
 
     # Logout
     delete "/sessions", Api.SessionController, :delete
+
+    get "/users", UserController, :index
+    patch "/users/:id/role", UserController, :update_role
   end
 
   # Admin login page — no auth required to reach the login form

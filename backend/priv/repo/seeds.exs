@@ -167,10 +167,9 @@ Enum.each(games, fn attrs ->
   end
 end)
 
-# Admin account seeding.
-# Reads from environment variables set on Render.
-# on_conflict: :nothing means re-deploys won't
-# fail or create duplicates if the user already exists.
+# Re-deploys may attempt to create the same admin users again.
+# If a user already exists, create_user/1 will return an error
+# and we log it as skipped.
 admin_accounts = [
   {
     System.get_env("STEFAN_EMAIL"),

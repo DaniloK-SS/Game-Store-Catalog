@@ -102,4 +102,31 @@ defmodule GameStore.Accounts do
                 :ok
     end
   end
+
+  def list_users do
+    Repo.all(User)
+  end
+
+  def update_user_role(id, role, current_user) do
+  with %User{} = user <- Repo.get(User, id),
+       :ok <- prevent_self_demotion(user, role, current_user) do
+    user
+    |> User.role_changeset(%{role: role})
+    |> Repo.update()
+  else
+    nil ->
+      {:error, :not_found}
+
+    {:error, _reason} = error ->
+      error
+  end
+end
+
+defp prevent_self_demotion(user, role, current_user) do
+  if user.id == current_user.id and current_user.role == "admin" and role == "user" do
+    {:error, :cannot_demote_self}
+  else
+    :ok
+  end
+end
 end
