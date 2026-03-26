@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { apiFetch } from '@/lib/apiFetch'
 
 interface Game {
   id: number
@@ -19,6 +20,7 @@ export default function AdminGamesPage() {
   const router = useRouter()
 
   useEffect(() => {
+    // GET ostaje PUBLIC — bez tokena
     fetch('https://game-store-catalog.onrender.com/api/games')
       .then(res => res.json())
       .then(data => {
@@ -36,25 +38,28 @@ export default function AdminGamesPage() {
           platform: g.platform,
           inStock: g.in_stock === true || g.inStock === true,
           coverImage: g.cover_image || g.coverImage || '',
-        })) //prizak edit stranice (button edit)
+        }))
 
         setGames(mapped)
         setLoading(false)
       })
   }, [])
 
-  const handleDelete = async (id: number) => { //delete game button
+  const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this game?')) return
 
-    await fetch(`https://game-store-catalog.onrender.com/api/games/${id}`, {
-      method: 'DELETE'
+    // DELETE je PROTECTED — koristi apiFetch sa tokenom
+    await apiFetch(`/api/games/${id}`, {
+      method: 'DELETE',
     })
 
     setGames(games.filter(g => g.id !== id))
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAdmin')
+  const handleLogout = async () => {
+    // Logout na backend
+    await apiFetch('/api/sessions', { method: 'DELETE' })
+    localStorage.removeItem('token')
     router.replace('/admin/login')
   }
 
@@ -71,7 +76,7 @@ export default function AdminGamesPage() {
           <button
             onClick={() => router.push('/games')}
             className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
-                View Public Site
+            View Public Site
           </button>
           <button
             onClick={() => router.push('/admin/games/create')}
@@ -107,11 +112,11 @@ export default function AdminGamesPage() {
                       <img
                         src={game.coverImage}
                         alt={game.title}
-                        className="w-12 h-12 object-cover rounded-lg"/>
+                        className="w-12 h-12 object-cover rounded-lg" />
                     ) : (
                       <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-xs">
                         🎮
-                      </div> //ako ne prodje load slika
+                      </div>
                     )}
                     <span className="font-medium text-gray-900">{game.title}</span>
                   </div>
