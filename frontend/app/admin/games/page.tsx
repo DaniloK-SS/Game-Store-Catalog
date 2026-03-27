@@ -49,10 +49,7 @@ export default function AdminGamesPage() {
     if (!confirm('Are you sure you want to delete this game?')) return
 
     // DELETE je PROTECTED — koristi apiFetch sa tokenom
-    await apiFetch(`/api/games/${id}`, {
-      method: 'DELETE',
-    })
-
+    await apiFetch(`/api/games/${id}`, { method: 'DELETE' })
     setGames(games.filter(g => g.id !== id))
   }
 
@@ -66,13 +63,14 @@ export default function AdminGamesPage() {
   if (loading) return <p className="p-6">Loading...</p>
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="max-w-6xl mx-auto p-4 md:p-6">
+
+      <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Admin Panel</h1>
           <p className="text-gray-500 text-sm">Manage your game catalog</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => router.push('/games')}
             className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
@@ -95,36 +93,49 @@ export default function AdminGamesPage() {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Game</th>
-              <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Genre</th>
-              <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Platform</th>
-              <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Price</th>
-              <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Stock</th>
-              <th className="text-left px-6 py-3 text-sm font-semibold text-gray-600">Actions</th>
+              <th className="text-left px-3 py-3 text-sm font-semibold text-gray-600">Game</th>
+              {/* sakriveno na mobilnom, vidljivo od md */}
+              <th className="hidden md:table-cell text-left px-3 py-3 text-sm font-semibold text-gray-600">Genre</th>
+              <th className="hidden sm:table-cell text-left px-3 py-3 text-sm font-semibold text-gray-600">Platform</th>
+              {/* price sakriveno na mobilnom */}
+              <th className="hidden sm:table-cell text-left px-3 py-3 text-sm font-semibold text-gray-600">Price</th>
+              {/* sakriveno na mobilnom, vidljivo od md */}
+              <th className="hidden md:table-cell text-left px-3 py-3 text-sm font-semibold text-gray-600">Stock</th>
+              <th className="text-left px-3 py-3 text-sm font-semibold text-gray-600">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {games.map(game => (
               <tr key={game.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
+
+                <td className="px-3 py-3">
+                  <div className="flex items-center gap-2">
                     {game.coverImage ? (
                       <img
                         src={game.coverImage}
                         alt={game.title}
-                        className="w-12 h-12 object-cover rounded-lg" />
+                        className="w-9 h-9 md:w-11 md:h-11 object-cover rounded-lg shrink-0" />
                     ) : (
-                      <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-xs">
+                      // ako ne prodje load slika //shrink-0 smanjuje se u odnosu na ostale elemente
+                      <div className="w-9 h-9 md:w-11 md:h-11 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-xs shrink-0"> 
                         🎮
                       </div>
                     )}
-                    <span className="font-medium text-gray-900">{game.title}</span>
+                    <span className="font-medium text-gray-900 text-sm leading-tight">{game.title}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-gray-500 text-sm">{game.genre}</td>
-                <td className="px-6 py-4 text-gray-500 text-sm">{game.platform}</td>
-                <td className="px-6 py-4 font-medium">${game.price}</td>
-                <td className="px-6 py-4">
+
+                {/* genre — sakriveno na mobilnom */}
+                <td className="hidden md:table-cell px-3 py-3 text-gray-500 text-sm">{game.genre}</td>
+
+                {/* platform — sakriveno na mobilnom */}
+                <td className="hidden sm:table-cell px-3 py-3 text-gray-500 text-sm">{game.platform}</td>
+
+                {/* price — sakriveno na mobilnom */}
+                <td className="hidden sm:table-cell px-3 py-3 font-medium text-sm">${game.price}</td>
+
+                {/* stock badge — sakriven na mobilnom */}
+                <td className="hidden md:table-cell px-3 py-3">
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     game.inStock
                       ? 'bg-green-100 text-green-700'
@@ -133,18 +144,23 @@ export default function AdminGamesPage() {
                     {game.inStock ? 'In Stock' : 'Out of Stock'}
                   </span>
                 </td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => router.push(`/admin/games/${game.id}/edit`)}
-                    className="text-blue-600 hover:text-blue-800 font-medium text-sm mr-4">
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(game.id)}
-                    className="text-red-500 hover:text-red-700 font-medium text-sm">
-                    Delete
-                  </button>
+
+                {/* edit stranice (button edit i delete) */}
+                <td className="px-3 py-3">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => router.push(`/admin/games/${game.id}/edit`)}
+                      className="px-2.5 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg font-medium text-xs transition whitespace-nowrap">
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(game.id)}
+                      className="px-2.5 py-1.5 bg-red-50 text-red-500 hover:bg-red-100 rounded-lg font-medium text-xs transition whitespace-nowrap">
+                      Delete
+                    </button>
+                  </div>
                 </td>
+
               </tr>
             ))}
           </tbody>
