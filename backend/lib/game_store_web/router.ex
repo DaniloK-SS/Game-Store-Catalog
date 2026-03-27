@@ -62,6 +62,7 @@ defmodule GameStoreWeb.Router do
 
     get "/users", UserController, :index
     patch "/users/:id/role", UserController, :update_role
+    post "/users", UserController, :create
   end
 
   # Admin login page — no auth required to reach the login form
@@ -80,6 +81,7 @@ defmodule GameStoreWeb.Router do
     live "/games", AdminLive.Index, :index
     live "/games/new", AdminLive.New, :new
     live "/games/:id/edit", AdminLive.Edit, :edit
+    live "/users", AdminLive.Users, :index
   end
 
   if Application.compile_env(:game_store, :dev_routes) do

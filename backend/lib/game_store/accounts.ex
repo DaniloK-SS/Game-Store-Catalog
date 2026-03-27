@@ -50,7 +50,7 @@ defmodule GameStore.Accounts do
     Repo.get(User, id)
   end
 
-    @doc """
+  @doc """
   Creates a token for the given user.
   Generates a random URL-safe string, stores it in the
   database linked to the user, and returns it.
@@ -97,9 +97,12 @@ defmodule GameStore.Accounts do
   """
   def delete_token(token_value) do
     case Repo.get_by(Token, token: token_value) do
-      nil -> :ok
-      token -> Repo.delete(token)
-                :ok
+      nil ->
+        :ok
+
+      token ->
+        Repo.delete(token)
+        :ok
     end
   end
 
@@ -108,25 +111,25 @@ defmodule GameStore.Accounts do
   end
 
   def update_user_role(id, role, current_user) do
-  with %User{} = user <- Repo.get(User, id),
-       :ok <- prevent_self_demotion(user, role, current_user) do
-    user
-    |> User.role_changeset(%{role: role})
-    |> Repo.update()
-  else
-    nil ->
-      {:error, :not_found}
+    with %User{} = user <- Repo.get(User, id),
+         :ok <- prevent_self_demotion(user, role, current_user) do
+      user
+      |> User.role_changeset(%{role: role})
+      |> Repo.update()
+    else
+      nil ->
+        {:error, :not_found}
 
-    {:error, _reason} = error ->
-      error
+      {:error, _reason} = error ->
+        error
+    end
   end
-end
 
-defp prevent_self_demotion(user, role, current_user) do
-  if user.id == current_user.id and current_user.role == "admin" and role == "user" do
-    {:error, :cannot_demote_self}
-  else
-    :ok
+  defp prevent_self_demotion(user, role, current_user) do
+    if user.id == current_user.id and current_user.role == "admin" and role == "user" do
+      {:error, :cannot_demote_self}
+    else
+      :ok
+    end
   end
-end
 end

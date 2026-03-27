@@ -18,6 +18,7 @@ defmodule GameStore.Games do
   # Passes query through if no platform filter provided.
   # Otherwise filters by exact platform match.
   defp filter_by_platform(query, nil), do: query
+
   defp filter_by_platform(query, platform) do
     where(query, [g], g.platform == ^platform)
   end
@@ -25,6 +26,7 @@ defmodule GameStore.Games do
   # Passes query through if no genre filter provided.
   # Otherwise filters by exact genre match.
   defp filter_by_genre(query, nil), do: query
+
   defp filter_by_genre(query, genre) do
     where(query, [g], g.genre == ^genre)
   end
@@ -32,16 +34,20 @@ defmodule GameStore.Games do
   # Handles both "in_stock" (backend convention) and
   # "inStock" (frontend convention) as param keys.
   defp filter_by_stock(query, nil), do: query
+
   defp filter_by_stock(query, "true") do
     where(query, [g], g.in_stock == true)
   end
+
   defp filter_by_stock(query, "false") do
     where(query, [g], g.in_stock == false)
   end
+
   defp filter_by_stock(query, _), do: query
 
   # Case-insensitive title search using PostgreSQL ILIKE.
   defp filter_by_search(query, nil), do: query
+
   defp filter_by_search(query, search) do
     where(query, [g], ilike(g.title, ^"%#{search}%"))
   end
@@ -49,18 +55,23 @@ defmodule GameStore.Games do
   # Sorts games by the given sort key.
   # Passes the query through unchanged if no sort key provided.
   defp sort_by(query, nil), do: query
+
   defp sort_by(query, "priceLow") do
     order_by(query, [g], asc: g.price)
   end
+
   defp sort_by(query, "priceHigh") do
     order_by(query, [g], desc: g.price)
   end
+
   defp sort_by(query, "newest") do
     order_by(query, [g], desc: g.release_year)
   end
+
   defp sort_by(query, "title") do
     order_by(query, [g], asc: g.title)
   end
+
   defp sort_by(query, _), do: query
 
   # Fetches a single game by ID.

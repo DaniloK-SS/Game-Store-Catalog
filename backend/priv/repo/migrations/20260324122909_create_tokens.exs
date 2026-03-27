@@ -9,9 +9,7 @@ defmodule GameStore.Repo.Migrations.CreateTokens do
       timestamps(type: :utc_datetime)
     end
 
-
     create unique_index(:tokens, [:token])
-
 
     create index(:tokens, [:user_id])
   end

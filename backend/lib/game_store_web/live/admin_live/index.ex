@@ -49,6 +49,12 @@ defmodule GameStoreWeb.AdminLive.Index do
             + Add New Game
           </.link>
           <.link
+            navigate={~p"/admin/users"}
+            class="text-sm text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded"
+          >
+            Users
+          </.link>
+          <.link
             href={~p"/admin/logout"}
             method="delete"
             class="text-sm text-red-600 hover:text-red-800 px-4 py-2 border border-red-200 rounded"

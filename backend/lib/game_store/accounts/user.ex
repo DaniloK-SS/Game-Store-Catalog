@@ -23,10 +23,10 @@ defmodule GameStore.Accounts.User do
   end
 
   def role_changeset(user, attrs) do
-      user
-      |> cast(attrs, [:role])
-      |> validate_required([:role])
-      |> validate_inclusion(:role, ["user", "admin"], message: "must be user or admin")
+    user
+    |> cast(attrs, [:role])
+    |> validate_required([:role])
+    |> validate_inclusion(:role, ["user", "admin"], message: "must be user or admin")
   end
 
   defp hash_password(changeset) do
