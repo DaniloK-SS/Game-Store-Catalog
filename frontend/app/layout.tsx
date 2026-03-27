@@ -33,7 +33,7 @@ export default function RootLayout({
         <SearchProvider>
           <Navbar />
 
-          {/* 🔥 MAIN CONTENT WRAPPER */}
+          {/* CONTENT WRAPPER */}
           <main className="min-h-screen">
             {children}
           </main>

@@ -159,6 +159,7 @@ export default function HomePage() {
             games={filteredGames}
             onAddToWishlist={handleAddToWishlist}
             onRemoveFromWishlist={handleRemoveFromWishlist}
+            limit={9}
             isInWishlist={(gameId) => isInWishlist(wishlist, gameId)}
           />
         )}

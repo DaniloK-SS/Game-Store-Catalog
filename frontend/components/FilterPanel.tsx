@@ -31,7 +31,6 @@ export default function FilterPanel({
       </h2>
 
       <SortSelect sort={sort} setSort={setSort} />
-
       <div>
         <p className="text-sm font-semibold text-gray-600">Platform</p>
         <select

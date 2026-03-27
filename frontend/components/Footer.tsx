@@ -96,7 +96,7 @@ export default function Footer() {
         </div>
 
         <p className="text-[11px] text-gray-400 mt-6 leading-relaxed text-center max-w-2xl mx-auto">
-          © 2026, Game Shop, Inc. All rights reserved. Games, the Game Shop logo are trademarks or registered trademarks.
+          © 2026, Game Shop, Inc. All rights reserved. Games, the Game Store logo are trademarks or registered trademarks.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-500 mt-4">

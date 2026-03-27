@@ -1,14 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import GameGrid from "@/components/GameGrid"
+import GameCard from "@/components/GameCard"
 import EmptyWishlist from "@/components/EmptyWishList"
 import { getGames } from "@/lib/GetGames"
 
 const getWishlist = () => {
   const stringList = localStorage.getItem("wishlist")
   return stringList?.split(",")
-    .map(x => Number(x.trim())) // ✅ uvijek number
+    .map(x => Number(x.trim()))
     .filter(num => !isNaN(num)) ?? []
 }
 
@@ -18,7 +18,8 @@ const isInWishlist = (wishlist: number[], gameId: number) => {
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<number[]>([])
-  const [games, setGames] = useState<any[]>([]) //  API games
+  const [games, setGames] = useState<any[]>([])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -28,14 +29,13 @@ export default function WishlistPage() {
         ? data
         : data?.data || data?.games || []
 
-      // normalizacija
       const normalizedGames = parsedGames.map((g: any) => ({
         ...g,
         id: Number(g.id),
         price: Number(g.price),
       }))
-
       setGames(normalizedGames)
+      setLoaded(true)
     }
 
     fetchData()
@@ -48,27 +48,51 @@ export default function WishlistPage() {
     localStorage.setItem("wishlist", newWishlist.join(","))
   }
 
-   
   const wishlistGames = games.filter(game =>
     wishlist.includes(game.id)
   )
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto px-6 py-10">
 
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
-        Your Wishlist
-      </h1>
+      <div className={`mb-8 transition-all duration-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+        <h1 className="text-3xl font-bold text-gray-800">
+          Your Wishlist
+        </h1>
+
+        <p className="text-sm text-gray-500 mt-1">
+          {wishlistGames.length} saved game{wishlistGames.length !== 1 && "s"}
+        </p>
+      </div>
 
       {wishlistGames.length === 0 ? (
-        <EmptyWishlist />
+        <div className="animate-fadeIn">
+          <EmptyWishlist />
+        </div>
       ) : (
-        <GameGrid
-          games={wishlistGames}
-          onAddToWishlist={() => {}}
-          onRemoveFromWishlist={handleRemoveFromWishlist}
-          isInWishlist={(gameId) => isInWishlist(wishlist, gameId)}
-        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          {wishlistGames.map((game, index) => (
+            <div
+              key={game.id}
+              className={`transition-all duration-500 ${
+                loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+              } hover:-translate-y-2 hover:shadow-xl`}
+              style={{
+                transitionDelay: `${index * 80}ms`,
+              }}
+            >
+              <GameCard
+                game={game}
+                onAddToWishlist={() => {}}
+                onRemoveFromWishlist={handleRemoveFromWishlist}
+                isInWishlist={(gameId) => isInWishlist(wishlist, gameId)}
+              />
+            </div>
+          ))}
+
+        </div>
       )}
 
     </div>
