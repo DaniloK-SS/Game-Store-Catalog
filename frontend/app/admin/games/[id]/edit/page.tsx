@@ -36,7 +36,7 @@ export default function EditGamePage() {
           description: game.description || '',
           platform: game.platform || '',
           publisher: game.publisher || '',
-          releaseYear: game.release_year || '',
+          releaseYear: game.release_year || game.releaseYear || '',
           inStock: game.in_stock === true,
           featured: game.featured === true,
         })

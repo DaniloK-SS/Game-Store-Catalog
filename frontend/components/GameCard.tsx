@@ -73,7 +73,7 @@ export default function GameCard({
 
         <p className="text-gray-500 text-sm">{game.platform}</p>
 
-        <p className="font-bold mt-2 text-lg text-indigo-600">
+        <p className="font-bold mt-2 text-lg text-black-600">
           ${game.price}
         </p>
 
