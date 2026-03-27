@@ -48,4 +48,87 @@ defmodule GameStore.Cloudinary do
         {:error, "Upload failed: #{inspect(reason)}"}
     end
   end
+
+  def extract_public_id(nil), do: :error
+  def extract_public_id(""), do: :error
+
+  def extract_public_id(url) when is_binary(url) do
+    case String.split(url, "/upload/", parts: 2) do
+      [_left, right] ->
+        right
+        |> strip_version()
+        |> strip_extension()
+        |> case do
+          "" -> :error
+          public_id -> {:ok, public_id}
+        end
+
+      _ ->
+        :error
+    end
+  end
+
+  def delete(public_id) when is_binary(public_id) do
+    config = Application.get_env(:game_store, :cloudinary)
+    cloud_name = config[:cloud_name]
+    api_key = config[:api_key]
+    api_secret = config[:api_secret]
+    timestamp = DateTime.utc_now() |> DateTime.to_unix() |> Integer.to_string()
+
+    signature =
+      "public_id=#{public_id}&timestamp=#{timestamp}#{api_secret}"
+      |> then(&:crypto.hash(:sha, &1))
+      |> Base.encode16(case: :lower)
+
+    url = "https://api.cloudinary.com/v1_1/#{cloud_name}/image/destroy"
+
+    form = [
+      {"public_id", public_id},
+      {"timestamp", timestamp},
+      {"api_key", api_key},
+      {"signature", signature}
+    ]
+
+    case Req.post(url, form: form) do
+      {:ok, %{status: 200, body: %{"result" => result}}} when result in ["ok", "not found"] ->
+        :ok
+
+      {:ok, %{status: 200, body: body}} ->
+        {:error, "Cloudinary delete failed: #{inspect(body)}"}
+
+      {:ok, %{status: status, body: body}} ->
+        {:error, "Cloudinary error #{status}: #{inspect(body)}"}
+
+      {:error, reason} ->
+        {:error, "Delete failed: #{inspect(reason)}"}
+    end
+  end
+
+  defp strip_version(path) do
+    case String.split(path, "/", parts: 2) do
+      [<<"v", rest::binary>>, remaining] when rest != "" ->
+        remaining
+
+      _ ->
+        path
+    end
+  end
+
+  defp strip_extension(path) do
+    case String.split(path, "/") do
+      [] ->
+        ""
+
+      parts ->
+        {last, rest} = List.pop_at(parts, -1)
+
+        filename_without_extension =
+          case String.split(last, ".", parts: 2) do
+            [name, _ext] -> name
+            [name] -> name
+          end
+
+        Path.join(rest ++ [filename_without_extension])
+    end
+  end
 end

@@ -101,8 +101,27 @@ defmodule GameStore.Games do
 
   # Deletes a game from the database.
   # Returns {:ok, game} on success.
-  def delete_game(%Game{} = game) do
-    Repo.delete(game)
+  def delete_game(game) do
+    case maybe_delete_cover_image(game.cover_image) do
+      :ok ->
+        Repo.delete(game)
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp maybe_delete_cover_image(nil), do: :ok
+  defp maybe_delete_cover_image(""), do: :ok
+
+  defp maybe_delete_cover_image(url) do
+    case GameStore.Cloudinary.extract_public_id(url) do
+      {:ok, public_id} ->
+        GameStore.Cloudinary.delete(public_id)
+
+      :error ->
+        :ok
+    end
   end
 
   # Returns a changeset for tracking form changes.

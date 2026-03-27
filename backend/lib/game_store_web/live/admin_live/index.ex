@@ -14,16 +14,34 @@ defmodule GameStoreWeb.AdminLive.Index do
   # Fetches the game first to make sure it exists,
   # then deletes it and refreshes the games list.
   def handle_event("delete", %{"id" => id}, socket) do
-    {:ok, game} = Games.get_game(id)
-    Games.delete_game(game)
-    games = Games.list_games()
+    case Games.get_game(id) do
+      {:ok, game} ->
+        case Games.delete_game(game) do
+          {:ok, _deleted_game} ->
+            games = Games.list_games()
 
-    socket =
-      socket
-      |> put_flash(:info, "Game deleted successfully")
-      |> assign(:games, games)
+            socket =
+              socket
+              |> put_flash(:info, "Game deleted successfully")
+              |> assign(:games, games)
 
-    {:noreply, socket}
+            {:noreply, socket}
+
+          {:error, reason} ->
+            socket =
+              socket
+              |> put_flash(:error, "Failed to delete game: #{inspect(reason)}")
+
+            {:noreply, socket}
+        end
+
+      {:error, :not_found} ->
+        socket =
+          socket
+          |> put_flash(:error, "Game not found")
+
+        {:noreply, socket}
+    end
   end
 
   def render(assigns) do

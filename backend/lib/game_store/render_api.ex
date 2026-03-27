@@ -64,89 +64,88 @@ defmodule GameStore.RenderAPI do
   end
 
   def update_user_role(token, user_id, role) do
-  case Req.patch(
-         "#{@base_url}/users/#{user_id}/role",
-         headers: [
-           {"authorization", "Bearer #{token}"}
-         ],
-         json: %{
-           role: role
-         }
-       ) do
-    {:ok, %{status: 200, body: %{"data" => user}}} ->
-      {:ok, user}
+    case Req.patch(
+           "#{@base_url}/users/#{user_id}/role",
+           headers: [
+             {"authorization", "Bearer #{token}"}
+           ],
+           json: %{
+             role: role
+           }
+         ) do
+      {:ok, %{status: 200, body: %{"data" => user}}} ->
+        {:ok, user}
 
-    {:ok, %{status: 403, body: %{"error" => error}}} ->
-      {:error, error}
+      {:ok, %{status: 403, body: %{"error" => error}}} ->
+        {:error, error}
 
-    {:ok, %{status: 404}} ->
-      {:error, :not_found}
+      {:ok, %{status: 404}} ->
+        {:error, :not_found}
 
-    {:ok, %{status: 422}} ->
-      {:error, :invalid_role}
+      {:ok, %{status: 422}} ->
+        {:error, :invalid_role}
 
-    {:ok, %{status: 401}} ->
-      {:error, :unauthorized}
+      {:ok, %{status: 401}} ->
+        {:error, :unauthorized}
 
-    {:ok, _response} ->
-      {:error, :request_failed}
+      {:ok, _response} ->
+        {:error, :request_failed}
 
-    {:error, _reason} ->
-      {:error, :request_failed}
+      {:error, _reason} ->
+        {:error, :request_failed}
+    end
   end
-end
 
-# def create_user(token, attrs) do
-#   case Req.post(
-#          "#{@base_url}/users",
-#          headers: [
-#            {"authorization", "Bearer #{token}"}
-#          ],
-#          json: %{
-#            user: attrs
-#          }
-#        ) do
-#     {:ok, %{status: 201, body: %{"data" => user}}} ->
-#       {:ok, user}
+  # def create_user(token, attrs) do
+  #   case Req.post(
+  #          "#{@base_url}/users",
+  #          headers: [
+  #            {"authorization", "Bearer #{token}"}
+  #          ],
+  #          json: %{
+  #            user: attrs
+  #          }
+  #        ) do
+  #     {:ok, %{status: 201, body: %{"data" => user}}} ->
+  #       {:ok, user}
 
-#     {:ok, %{status: 422, body: %{"errors" => errors}}} ->
-#       {:error, {:validation, errors}}
+  #     {:ok, %{status: 422, body: %{"errors" => errors}}} ->
+  #       {:error, {:validation, errors}}
 
-#     {:ok, %{status: 401}} ->
-#       {:error, :unauthorized}
+  #     {:ok, %{status: 401}} ->
+  #       {:error, :unauthorized}
 
-#     {:ok, _response} ->
-#       {:error, :request_failed}
+  #     {:ok, _response} ->
+  #       {:error, :request_failed}
 
-#     {:error, _reason} ->
-#       {:error, :request_failed}
-#   end
-# end
+  #     {:error, _reason} ->
+  #       {:error, :request_failed}
+  #   end
+  # end
 
+  def create_user(token, attrs) do
+    case Req.post(
+           "#{@base_url}/users",
+           headers: [
+             {"authorization", "Bearer #{token}"}
+           ],
+           json: %{
+             user: attrs
+           }
+         ) do
+      {:ok, %{status: status, body: body}} ->
+        IO.inspect({status, body}, label: "CREATE USER RESPONSE")
 
-def create_user(token, attrs) do
-  case Req.post(
-         "#{@base_url}/users",
-         headers: [
-           {"authorization", "Bearer #{token}"}
-         ],
-         json: %{
-           user: attrs
-         }
-       ) do
-    {:ok, %{status: status, body: body}} ->
-      IO.inspect({status, body}, label: "CREATE USER RESPONSE")
+        case status do
+          201 -> {:ok, body["data"]}
+          422 -> {:error, {:validation, body}}
+          401 -> {:error, :unauthorized}
+          _ -> {:error, {:unexpected, status, body}}
+        end
 
-      case status do
-        201 -> {:ok, body["data"]}
-        422 -> {:error, {:validation, body}}
-        401 -> {:error, :unauthorized}
-        _ -> {:error, {:unexpected, status, body}}
-      end
-
-    {:error, reason} ->
-      IO.inspect(reason, label: "REQUEST ERROR")
-      {:error, :request_failed}
+      {:error, reason} ->
+        IO.inspect(reason, label: "REQUEST ERROR")
+        {:error, :request_failed}
+    end
   end
-end
 end
