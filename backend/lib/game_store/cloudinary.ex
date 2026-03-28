@@ -77,7 +77,7 @@ defmodule GameStore.Cloudinary do
 
     signature =
       "public_id=#{public_id}&timestamp=#{timestamp}#{api_secret}"
-      |> then(&:crypto.hash(:sha, &1))
+      |> :crypto.hash(:sha)
       |> Base.encode16(case: :lower)
 
     url = "https://api.cloudinary.com/v1_1/#{cloud_name}/image/destroy"
@@ -89,7 +89,10 @@ defmodule GameStore.Cloudinary do
       {"signature", signature}
     ]
 
-    case Req.post(url, form: form) do
+    case Req.post(url,
+           headers: [{"content-type", "application/x-www-form-urlencoded"}],
+           form: form
+         ) do
       {:ok, %{status: 200, body: %{"result" => result}}} when result in ["ok", "not found"] ->
         :ok
 
