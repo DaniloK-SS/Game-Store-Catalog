@@ -76,8 +76,7 @@ defmodule GameStore.Cloudinary do
     timestamp = DateTime.utc_now() |> DateTime.to_unix() |> Integer.to_string()
 
     signature =
-      "public_id=#{public_id}&timestamp=#{timestamp}#{api_secret}"
-      |> :crypto.hash(:sha)
+      :crypto.hash(:sha, "public_id=#{public_id}&timestamp=#{timestamp}#{api_secret}")
       |> Base.encode16(case: :lower)
 
     url = "https://api.cloudinary.com/v1_1/#{cloud_name}/image/destroy"
