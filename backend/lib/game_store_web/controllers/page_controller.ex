@@ -2,6 +2,6 @@ defmodule GameStoreWeb.PageController do
   use GameStoreWeb, :controller
 
   def home(conn, _params) do
-    render(conn, :home)
+    redirect(conn, to: ~p"/games")
   end
 end

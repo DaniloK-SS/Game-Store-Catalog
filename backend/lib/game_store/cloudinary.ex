@@ -4,9 +4,8 @@ defmodule GameStore.Cloudinary do
   Returns {:ok, url} on success or {:error, reason} on failure.
   """
   def upload(file_path) do
-    config = Application.get_env(:game_store, :cloudinary)
-    cloud_name = config[:cloud_name]
-    upload_preset = config[:upload_preset]
+    cloud_name = config()[:cloud_name]
+    upload_preset = config()[:upload_preset]
 
     url = "https://api.cloudinary.com/v1_1/#{cloud_name}/image/upload"
 
@@ -69,10 +68,9 @@ defmodule GameStore.Cloudinary do
   end
 
   def delete(public_id) when is_binary(public_id) do
-    config = Application.get_env(:game_store, :cloudinary)
-    cloud_name = config[:cloud_name]
-    api_key = config[:api_key]
-    api_secret = config[:api_secret]
+    cloud_name = config()[:cloud_name]
+    api_key = config()[:api_key]
+    api_secret = config()[:api_secret]
     timestamp = DateTime.utc_now() |> DateTime.to_unix() |> Integer.to_string()
 
     signature =
@@ -123,14 +121,11 @@ defmodule GameStore.Cloudinary do
 
       parts ->
         {last, rest} = List.pop_at(parts, -1)
-
-        filename_without_extension =
-          case String.split(last, ".", parts: 2) do
-            [name, _ext] -> name
-            [name] -> name
-          end
-
-        Path.join(rest ++ [filename_without_extension])
+        Path.join(rest ++ [Path.rootname(last)])
     end
+  end
+
+  defp config do
+    Application.fetch_env!(:game_store, :cloudinary)
   end
 end

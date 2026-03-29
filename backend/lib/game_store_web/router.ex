@@ -10,13 +10,7 @@ defmodule GameStoreWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :admin do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, html: {GameStoreWeb.Layouts, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+  pipeline :require_admin do
     plug GameStoreWeb.Plugs.RequireAdmin
   end
 
@@ -76,7 +70,7 @@ defmodule GameStoreWeb.Router do
 
   # Admin panel — requires admin session
   scope "/admin", GameStoreWeb do
-    pipe_through :admin
+    pipe_through [:browser, :require_admin]
 
     live "/games", AdminLive.Index, :index
     live "/games/new", AdminLive.New, :new

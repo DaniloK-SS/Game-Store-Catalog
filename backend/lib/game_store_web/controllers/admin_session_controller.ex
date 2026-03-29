@@ -12,7 +12,7 @@ defmodule GameStoreWeb.AdminSessionController do
       {:ok, token} ->
         conn
         |> put_session(:render_token, token)
-        |> redirect(to: "/admin/games")
+        |> redirect(to: ~p"/admin/games")
 
       {:error, :invalid_credentials} ->
         conn
@@ -35,6 +35,6 @@ defmodule GameStoreWeb.AdminSessionController do
   def delete(conn, _params) do
     conn
     |> clear_session()
-    |> redirect(to: "/admin/login")
+    |> redirect(to: ~p"/admin/login")
   end
 end

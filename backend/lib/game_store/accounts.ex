@@ -3,10 +3,6 @@ defmodule GameStore.Accounts do
   alias GameStore.Accounts.User
   alias GameStore.Accounts.Token
 
-  @doc """
-  Creates a new user with a hashed password.
-  Returns {:ok, user} on success, {:error, changeset} on failure.
-  """
   def create_user(attrs) do
     %User{}
     |> User.changeset(attrs)
@@ -41,11 +37,6 @@ defmodule GameStore.Accounts do
     end
   end
 
-  @doc """
-  Fetches a single user by ID.
-  Returns the user or nil if not found.
-  Used by the RequireAdmin plug to verify the session.
-  """
   def get_user(id) do
     Repo.get(User, id)
   end
@@ -90,11 +81,6 @@ defmodule GameStore.Accounts do
     end
   end
 
-  @doc """
-  Deletes a token by its value.
-  Called on logout — after this the token is gone
-  and can never be used again.
-  """
   def delete_token(token_value) do
     case Repo.get_by(Token, token: token_value) do
       nil ->

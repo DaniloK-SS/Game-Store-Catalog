@@ -1,10 +1,12 @@
 defmodule GameStoreWeb.AdminLive.Users do
   use GameStoreWeb, :live_view
 
+  alias GameStore.RenderAPI
+
   def mount(_params, session, socket) do
     token = session["render_token"]
 
-    case GameStore.RenderAPI.list_users(token) do
+    case RenderAPI.list_users(token) do
       {:ok, users} ->
         {:ok, assign(socket, users: users, error: nil, render_token: token)}
 
@@ -21,6 +23,7 @@ defmodule GameStoreWeb.AdminLive.Users do
           <h1 class="text-2xl font-bold text-gray-900">Users</h1>
           <p class="text-sm text-gray-500 mt-1">Manage user roles through the API</p>
         </div>
+
         <div class="flex gap-3">
           <.link
             navigate={~p"/admin/games"}
@@ -28,6 +31,7 @@ defmodule GameStoreWeb.AdminLive.Users do
           >
             Back to Games
           </.link>
+
           <.link
             href={~p"/admin/logout"}
             method="delete"
@@ -55,6 +59,7 @@ defmodule GameStoreWeb.AdminLive.Users do
           {@error}
         </div>
       <% end %>
+
       <div class="mb-6 bg-white rounded-xl shadow border border-gray-100 p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Create User</h2>
 
@@ -100,6 +105,7 @@ defmodule GameStoreWeb.AdminLive.Users do
           </div>
         </form>
       </div>
+
       <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
         <table class="w-full text-sm">
           <thead class="bg-gray-50 border-b border-gray-200">
@@ -110,6 +116,7 @@ defmodule GameStoreWeb.AdminLive.Users do
               <th class="text-left px-6 py-3 text-gray-500 font-medium">Actions</th>
             </tr>
           </thead>
+
           <tbody class="divide-y divide-gray-100">
             <%= for user <- @users do %>
               <tr class="hover:bg-gray-50">
@@ -149,75 +156,57 @@ defmodule GameStoreWeb.AdminLive.Users do
   def handle_event("toggle_role", %{"id" => id, "role" => role}, socket) do
     token = socket.assigns.render_token
 
-    case GameStore.RenderAPI.update_user_role(token, id, role) do
+    case RenderAPI.update_user_role(token, id, role) do
       {:ok, _updated_user} ->
-        case GameStore.RenderAPI.list_users(token) do
-          {:ok, users} ->
-            socket =
-              socket
-              |> put_flash(:info, "User role updated successfully")
-              |> assign(:users, users)
-
-            {:noreply, socket}
-
-          {:error, _reason} ->
-            socket =
-              socket
-              |> put_flash(:error, "Role updated, but failed to refresh users list")
-
-            {:noreply, socket}
-        end
+        refresh_users(socket, "User role updated successfully")
 
       {:error, error} ->
-        socket =
-          socket
-          |> put_flash(:error, "Failed to update role: #{inspect(error)}")
-
-        {:noreply, socket}
+        {:noreply, put_flash(socket, :error, "Failed to update role: #{inspect(error)}")}
     end
   end
 
   def handle_event("create_user", params, socket) do
     token = socket.assigns.render_token
+    attrs = user_attrs_from_params(params)
 
-    attrs = %{
+    case RenderAPI.create_user(token, attrs) do
+      {:ok, _user} ->
+        refresh_users(socket, "User created successfully")
+
+      {:error, {:validation, _errors}} ->
+        {:noreply, put_flash(socket, :error, "Failed to create user. Check the input values.")}
+
+      {:error, error} ->
+        {:noreply, put_flash(socket, :error, "Failed to create user: #{inspect(error)}")}
+    end
+  end
+
+  defp refresh_users(socket, success_message) do
+    token = socket.assigns.render_token
+
+    case RenderAPI.list_users(token) do
+      {:ok, users} ->
+        socket =
+          socket
+          |> put_flash(:info, success_message)
+          |> assign(:users, users)
+
+        {:noreply, socket}
+
+      {:error, _reason} ->
+        socket =
+          socket
+          |> put_flash(:error, "#{success_message}, but failed to refresh users list")
+
+        {:noreply, socket}
+    end
+  end
+
+  defp user_attrs_from_params(params) do
+    %{
       "email" => params["email"],
       "password" => params["password"],
       "role" => params["role"]
     }
-
-    case GameStore.RenderAPI.create_user(token, attrs) do
-      {:ok, _user} ->
-        case GameStore.RenderAPI.list_users(token) do
-          {:ok, users} ->
-            socket =
-              socket
-              |> put_flash(:info, "User created successfully")
-              |> assign(:users, users)
-
-            {:noreply, socket}
-
-          {:error, _reason} ->
-            socket =
-              socket
-              |> put_flash(:error, "User created, but failed to refresh users list")
-
-            {:noreply, socket}
-        end
-
-      {:error, {:validation, _errors}} ->
-        socket =
-          socket
-          |> put_flash(:error, "Failed to create user. Check the input values.")
-
-        {:noreply, socket}
-
-      {:error, error} ->
-        socket =
-          socket
-          |> put_flash(:error, "Failed to create user: #{inspect(error)}")
-
-        {:noreply, socket}
-    end
   end
 end

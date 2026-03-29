@@ -96,33 +96,6 @@ defmodule GameStore.RenderAPI do
     end
   end
 
-  # def create_user(token, attrs) do
-  #   case Req.post(
-  #          "#{@base_url}/users",
-  #          headers: [
-  #            {"authorization", "Bearer #{token}"}
-  #          ],
-  #          json: %{
-  #            user: attrs
-  #          }
-  #        ) do
-  #     {:ok, %{status: 201, body: %{"data" => user}}} ->
-  #       {:ok, user}
-
-  #     {:ok, %{status: 422, body: %{"errors" => errors}}} ->
-  #       {:error, {:validation, errors}}
-
-  #     {:ok, %{status: 401}} ->
-  #       {:error, :unauthorized}
-
-  #     {:ok, _response} ->
-  #       {:error, :request_failed}
-
-  #     {:error, _reason} ->
-  #       {:error, :request_failed}
-  #   end
-  # end
-
   def create_user(token, attrs) do
     case Req.post(
            "#{@base_url}/users",
@@ -134,8 +107,6 @@ defmodule GameStore.RenderAPI do
            }
          ) do
       {:ok, %{status: status, body: body}} ->
-        IO.inspect({status, body}, label: "CREATE USER RESPONSE")
-
         case status do
           201 -> {:ok, body["data"]}
           422 -> {:error, {:validation, body}}
@@ -143,8 +114,7 @@ defmodule GameStore.RenderAPI do
           _ -> {:error, {:unexpected, status, body}}
         end
 
-      {:error, reason} ->
-        IO.inspect(reason, label: "REQUEST ERROR")
+      {:error, _reason} ->
         {:error, :request_failed}
     end
   end
