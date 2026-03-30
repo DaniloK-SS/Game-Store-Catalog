@@ -47,7 +47,7 @@ export default function GameCard({
               onAddToWishlist(game.id)
             }
           }}
-          className={`absolute top-3 right-3 md:hidden 
+          className={`absolute top-3 right-3 md:hidden
             p-2.5 rounded-full 
             backdrop-blur-xl 
             border transition-all duration-300 
@@ -95,7 +95,7 @@ export default function GameCard({
               onAddToWishlist(game.id)
             }
           }}
-          className={`mt-4 w-full flex items-center justify-center gap-2 
+          className={`mt-4 w-full hidden md:flex items-center justify-center gap-2 
             py-2 rounded-md transition-all duration-200
             hover:scale-[1.02] active:scale-95
             ${inWishlist 
