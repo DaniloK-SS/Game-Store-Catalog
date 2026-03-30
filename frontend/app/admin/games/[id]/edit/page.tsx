@@ -40,7 +40,7 @@ export default function EditGamePage() {
           publisher: game.publisher || '',
           releaseYear: game.release_year || game.releaseYear || '',
           coverImage: game.cover_image || game.coverImage || '',
-          inStock: game.in_stock === true,
+          inStock: game.in_stock === true || game.inStock === true,
           featured: game.featured === true,
         })
         setLoading(false)
