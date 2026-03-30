@@ -10,7 +10,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="w-full border-b bg-white shadow-sm sticky top-0 z-50">
+    <nav className="w-full  bg-gray-50 shadow-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
         <Link href="/" className="flex items-center gap-2 text-lg font-bold text-gray-800 shrink-0">
           <FaGamepad className="text-indigo-600 text-xl" />

@@ -33,7 +33,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="w-full bg-gray-50 mt-16 py-10 px-4 text-gray-600 border-t">
+    <footer className="w-full bg-gray-50 mt-16 py-10 px-4 text-gray-600 ">
       <div className="max-w-5xl mx-auto">
 
         <h3 className="text-center text-sm font-semibold tracking-widest text-gray-500 mb-4">
