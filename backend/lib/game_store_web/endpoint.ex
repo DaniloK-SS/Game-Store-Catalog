@@ -51,8 +51,6 @@ defmodule GameStoreWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug  CORSPlug, origin: "*"
+  plug CORSPlug, origin: "*"
   plug GameStoreWeb.Router
-
-
 end

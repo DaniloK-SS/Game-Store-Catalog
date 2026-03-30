@@ -14,16 +14,34 @@ defmodule GameStoreWeb.AdminLive.Index do
   # Fetches the game first to make sure it exists,
   # then deletes it and refreshes the games list.
   def handle_event("delete", %{"id" => id}, socket) do
-    {:ok, game} = Games.get_game(id)
-    Games.delete_game(game)
-    games = Games.list_games()
+    case Games.get_game(id) do
+      {:ok, game} ->
+        case Games.delete_game(game) do
+          {:ok, _deleted_game} ->
+            games = Games.list_games()
 
-    socket =
-      socket
-      |> put_flash(:info, "Game deleted successfully")
-      |> assign(:games, games)
+            socket =
+              socket
+              |> put_flash(:info, "Game deleted successfully")
+              |> assign(:games, games)
 
-    {:noreply, socket}
+            {:noreply, socket}
+
+          {:error, reason} ->
+            socket =
+              socket
+              |> put_flash(:error, "Failed to delete game: #{inspect(reason)}")
+
+            {:noreply, socket}
+        end
+
+      {:error, :not_found} ->
+        socket =
+          socket
+          |> put_flash(:error, "Game not found")
+
+        {:noreply, socket}
+    end
   end
 
   def render(assigns) do
@@ -47,6 +65,12 @@ defmodule GameStoreWeb.AdminLive.Index do
             class="text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
           >
             + Add New Game
+          </.link>
+          <.link
+            navigate={~p"/admin/users"}
+            class="text-sm text-gray-600 hover:text-gray-900 px-4 py-2 border border-gray-300 rounded"
+          >
+            Users
           </.link>
           <.link
             href={~p"/admin/logout"}

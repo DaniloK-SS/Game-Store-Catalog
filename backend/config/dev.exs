@@ -91,7 +91,6 @@ config :phoenix_live_view,
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 
-
 config :game_store, :cloudinary,
   cloud_name: "dnq35ub8e",
   api_key: "119494591261461",

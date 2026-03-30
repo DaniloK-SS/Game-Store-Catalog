@@ -5,16 +5,15 @@ defmodule GameStoreWeb.Plugs.RequireAdmin do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    user_id = get_session(conn, :user_id)
-    user = user_id && GameStore.Accounts.get_user(user_id)
+    case get_session(conn, :render_token) do
+      nil ->
+        conn
+        |> put_flash(:error, "You must be logged in as admin")
+        |> redirect(to: "/admin/login")
+        |> halt()
 
-    if user && user.role == "admin" do
-      assign(conn, :current_user, user)
-    else
-      conn
-      |> put_flash(:error, "You must be logged in as admin")
-      |> redirect(to: "/admin/login")
-      |> halt()
+      _token ->
+        conn
     end
   end
 end

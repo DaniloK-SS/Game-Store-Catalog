@@ -44,11 +44,19 @@ defmodule GameStoreWeb.GameController do
   # Deletes a game by ID.
   # Responds with 404 if the game does not exist.
   # Responds with 200 and the deleted game on success.
+  # Responds with 500 if image cleanup fails.
   def delete(conn, %{"id" => id}) do
     case Games.get_game(id) do
       {:ok, game} ->
-        Games.delete_game(game)
-        render(conn, :show, game: game)
+        case Games.delete_game(game) do
+          {:ok, _deleted_game} ->
+            render(conn, :show, game: game)
+
+          {:error, reason} ->
+            conn
+            |> put_status(:internal_server_error)
+            |> render(:error, message: "Failed to delete game: #{inspect(reason)}")
+        end
 
       {:error, :not_found} ->
         conn

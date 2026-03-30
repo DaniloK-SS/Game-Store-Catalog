@@ -2,7 +2,6 @@ defmodule GameStoreWeb.AdminLive.Edit do
   use GameStoreWeb, :live_view
 
   alias GameStore.Games
-  alias GameStore.Games.Game
   alias GameStore.Cloudinary
 
   # Loads the existing game by ID and configures file upload.
