@@ -120,28 +120,30 @@ export default function EditGamePage() {
   if (loading) return <p className="p-6">Loading...</p>
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Edit Game</h1>
-        <button onClick={() => router.push('/admin/games')}
-          className="text-gray-500 hover:text-gray-700 text-sm">
-          ← Back to Admin
+    <div className="max-w-2xl mx-auto px-4 py-4 sm:p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-xl sm:text-2xl font-bold">Edit Game</h1>
+        <button
+          onClick={() => router.push('/admin/games')}
+          className="text-gray-500 hover:text-gray-700 text-sm"
+        >
+          ← Back
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-5">
+      <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 flex flex-col gap-4 sm:gap-5">
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
           <input name="title" value={form.title} onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
             <select name="genre" value={form.genre} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50">
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <option value="">Select genre</option>
               <option>Action</option><option>Adventure</option><option>RPG</option>
               <option>Racing</option><option>Shooter</option><option>Horror</option>
@@ -151,30 +153,30 @@ export default function EditGamePage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
             <select name="platform" value={form.platform} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50">
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none">
               <option value="">Select platform</option>
               <option>PC</option><option>PlayStation</option><option>Xbox</option>
             </select>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
             <input name="price" value={form.price} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Release Year</label>
             <input name="releaseYear" value={form.releaseYear} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Publisher</label>
           <input name="publisher" value={form.publisher} onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
         </div>
 
         <div>
@@ -185,7 +187,7 @@ export default function EditGamePage() {
               <p className="text-xs text-gray-400 mb-1">Current image</p>
               <img
                 src={form.coverImage}
-                className="w-24 h-24 object-cover rounded-xl shadow"
+                className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl shadow"
               />
             </div>
           )}
@@ -197,7 +199,7 @@ export default function EditGamePage() {
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 cursor-pointer"
+                className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
               />
               {uploading && <p className="text-xs text-gray-400 mt-1 animate-pulse">Uploading...</p>}
             </div>
@@ -209,7 +211,7 @@ export default function EditGamePage() {
                 value={form.coverImage}
                 onChange={handleChange}
                 placeholder="https://..."
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
           </div>
@@ -218,10 +220,10 @@ export default function EditGamePage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea name="description" value={form.description} onChange={handleChange} rows={4}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
+            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-4 flex-wrap">
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input type="checkbox" name="inStock" checked={form.inStock} onChange={handleChange} />
             In Stock
@@ -237,7 +239,7 @@ export default function EditGamePage() {
         <button
           onClick={handleSubmit}
           disabled={saving || uploading}
-          className="w-full py-3 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition">
+          className="w-full py-3 bg-blue-600 text-white rounded-2xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition">
           {saving ? 'Saving...' : 'Save Changes'}
         </button>
 

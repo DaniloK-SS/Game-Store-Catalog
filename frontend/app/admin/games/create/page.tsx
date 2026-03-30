@@ -172,12 +172,35 @@ export default function CreateGamePage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Cover Image</label>
-          <input type="file" accept="image/*" onChange={handleImageUpload}
-            className="w-full border border-dashed border-gray-300 rounded-xl px-4 py-3 text-sm cursor-pointer hover:bg-gray-50" />
-          {uploading && <p className="text-sm text-gray-500 mt-2 animate-pulse">Uploading...</p>}
-          {form.coverImage && <img src={form.coverImage} className="mt-3 w-24 h-24 object-cover rounded-xl shadow" />}
-        </div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">Cover Image</label>
+
+  <div className="flex items-center gap-3">
+    <label className="cursor-pointer bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-sm hover:bg-blue-200 transition">
+      Choose file
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="hidden"
+      />
+    </label>
+
+    <span className="text-sm text-gray-500 truncate max-w-40">
+      {uploading
+        ? 'Uploading...'
+        : form.coverImage
+        ? 'Image selected'
+        : 'No file chosen'}
+    </span>
+  </div>
+
+  {form.coverImage && (
+    <img
+      src={form.coverImage}
+      className="mt-3 w-24 h-24 object-cover rounded-xl shadow"
+    />
+  )}
+</div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
