@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Game } from "../app/types/game";
 import { MdPlaylistAddCheck } from "react-icons/md";
-import { CiBookmarkPlus, CiBookmarkRemove } from "react-icons/ci";
+import { FaHeartCirclePlus, FaHeartCircleXmark } from "react-icons/fa6";
 
 type Props = {
   game: Game;
@@ -37,36 +37,9 @@ export default function GameCard({
         />
 
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300" />
-
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            if (inWishlist) {
-              onRemoveFromWishlist(game.id)
-            } else {
-              onAddToWishlist(game.id)
-            }
-          }}
-          className={`absolute top-3 right-3 md:hidden
-            p-2.5 rounded-full 
-            backdrop-blur-xl 
-            border transition-all duration-300 
-            shadow-lg hover:scale-110 active:scale-95
-            ${inWishlist
-              ? "bg-indigo-600/90 border-indigo-500 text-white shadow-indigo-500/30"
-              : "bg-white/70 border-white/40 text-indigo-600 hover:bg-white"
-            }
-          `}
-        >
-          {inWishlist ? (
-            <CiBookmarkRemove className="text-2xl drop-shadow-sm" />
-          ) : (
-            <CiBookmarkPlus className="text-2xl drop-shadow-sm" />
-          )}
-        </button>
       </div>
 
-      <div className="p-4">
+      <div className="p-4 relative">
         <h2 className="text-xl font-semibold group-hover:text-indigo-600 transition">
           {game.title}
         </h2>
@@ -85,7 +58,31 @@ export default function GameCard({
         >
           {game.inStock ? "In Stock" : "Out of Stock"}
         </p>
-
+        <button
+          onClick={(e) => {
+            e.preventDefault()
+            if (inWishlist) {
+              onRemoveFromWishlist(game.id)
+            } else {
+              onAddToWishlist(game.id)
+            }
+          }}
+          className={`absolute bottom-3 right-3 md:hidden
+            p-2.5 rounded-full 
+            border transition-all duration-300 
+            shadow-md hover:scale-110 active:scale-95
+            ${inWishlist
+              ? "bg-indigo-600 text-white border-indigo-500"
+              : "bg-white text-indigo-600 border-gray-300 hover:bg-gray-100"
+            }
+          `}
+        >
+          {inWishlist ? (
+            <FaHeartCircleXmark className="text-2xl" />
+          ) : (
+            <FaHeartCirclePlus className="text-2xl" />
+          )}
+        </button>
         <button
           onClick={(e) => {
             e.preventDefault();

@@ -26,45 +26,55 @@ export default function FilterPanel({
   const isFiltered = platform || genre || inStock || sort
 
   return (
-    <div className="bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-5 shadow-lg space-y-5 transition hover:shadow-xl">
+    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-6">
 
-      <h2 className="text-lg font-bold border-b pb-2 text-gray-800">
+      <h2 className="text-xl font-bold text-indigo-600 border-b pb-3">
         Filters Panel
       </h2>
 
       <SortSelect sort={sort} setSort={setSort} />
 
       <div>
-        <p className="text-sm font-semibold text-gray-600">Platform</p>
-        <select
-          value={platform}
-          onChange={(e) => setPlatform(e.target.value)}
-          className="w-full mt-2 px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition hover:border-indigo-400"
-        >
-          <option value="">All</option>
-          <option value="PC">PC</option>
-          <option value="PlayStation">PlayStation</option>
-          <option value="Xbox">Xbox</option>
-        </select>
+        <p className="text-sm font-bold text-gray-800 mb-2">Platform</p>
+        <div className="relative">
+          <select
+            value={platform}
+            onChange={(e) => setPlatform(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border-2 border-indigo-200 bg-indigo-50 text-indigo-600 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400 appearance-none cursor-pointer"
+          >
+            <option value="">All</option>
+            <option value="PC">PC</option>
+            <option value="PlayStation">PlayStation</option>
+            <option value="Xbox">Xbox</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-indigo-500">
+            ▼
+          </div>
+        </div>
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-gray-600">Genre</p>
-        <select
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
-          className="w-full mt-2 px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition hover:border-indigo-400"
-        >
-          <option value="">All</option>
-          <option value="Action">Action</option>
-          <option value="RPG">RPG</option>
-          <option value="Adventure">Adventure</option>
-        </select>
+        <p className="text-sm font-bold text-gray-800 mb-2">Genre</p>
+        <div className="relative">
+          <select
+            value={genre}
+            onChange={(e) => setGenre(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border-2 border-indigo-200 bg-indigo-50 text-indigo-600 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400 appearance-none cursor-pointer"
+          >
+            <option value="">All</option>
+            <option value="Action">Action</option>
+            <option value="RPG">RPG</option>
+            <option value="Adventure">Adventure</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-indigo-500">
+            ▼
+          </div>
+        </div>
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-gray-600">Stock</p>
-        <label className="flex items-center justify-between mt-2 cursor-pointer group">
+        <p className="text-sm font-bold text-gray-800 mb-2">Stock</p>
+        <label className="flex items-center justify-between cursor-pointer group">
           <span className="text-sm text-gray-700 group-hover:text-indigo-600 transition">
             In Stock Only
           </span>
