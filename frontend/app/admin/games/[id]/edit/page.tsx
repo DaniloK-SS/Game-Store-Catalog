@@ -13,12 +13,14 @@ export default function EditGamePage() {
     platform: '',
     publisher: '',
     releaseYear: '',
+    coverImage: '',
     inStock: true,
     featured: false,
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [uploading, setUploading] = useState(false)
   const router = useRouter()
   const params = useParams()
   const id = params.id
@@ -37,6 +39,7 @@ export default function EditGamePage() {
           platform: game.platform || '',
           publisher: game.publisher || '',
           releaseYear: game.release_year || game.releaseYear || '',
+          coverImage: game.cover_image || game.coverImage || '',
           inStock: game.in_stock === true,
           featured: game.featured === true,
         })
@@ -57,6 +60,32 @@ export default function EditGamePage() {
     })
   }
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    setError('')
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'Game-Store')
+
+    try {
+      const res = await fetch(
+        'https://api.cloudinary.com/v1_1/dnq35ub8e/image/upload',
+        { method: 'POST', body: formData }
+      )
+      const data = await res.json()
+      if (!res.ok) throw new Error()
+      setForm(prev => ({ ...prev, coverImage: data.secure_url }))
+    } catch {
+      setError('Image upload failed')
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleSubmit = async () => {
     setSaving(true)
     setError('')
@@ -72,6 +101,7 @@ export default function EditGamePage() {
           price: form.price,
           release_year: Number(form.releaseYear),
           publisher: form.publisher,
+          cover_image: form.coverImage,
           description: form.description,
           in_stock: form.inStock,
           featured: form.featured,
@@ -99,18 +129,19 @@ export default function EditGamePage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-4">
+      <div className="bg-white rounded-xl shadow p-6 flex flex-col gap-5">
+
         <div>
-          <label className="block text-sm font-medium mb-1">Title</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
           <input name="title" value={form.title} onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Genre</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
             <select name="genre" value={form.genre} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50">
               <option value="">Select genre</option>
               <option>Action</option><option>Adventure</option><option>RPG</option>
               <option>Racing</option><option>Shooter</option><option>Horror</option>
@@ -118,9 +149,9 @@ export default function EditGamePage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Platform</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
             <select name="platform" value={form.platform} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50">
               <option value="">Select platform</option>
               <option>PC</option><option>PlayStation</option><option>Xbox</option>
             </select>
@@ -129,35 +160,73 @@ export default function EditGamePage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Price</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
             <input name="price" value={form.price} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Release Year</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Release Year</label>
             <input name="releaseYear" value={form.releaseYear} onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Publisher</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Publisher</label>
           <input name="publisher" value={form.publisher} onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Cover Image</label>
+
+          {form.coverImage && (
+            <div className="mb-3">
+              <p className="text-xs text-gray-400 mb-1">Current image</p>
+              <img
+                src={form.coverImage}
+                className="w-24 h-24 object-cover rounded-xl shadow"
+              />
+            </div>
+          )}
+
+          <div className="flex flex-col gap-2">
+            <div>
+              <p className="text-xs text-gray-400 mb-1">Upload a new file</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 cursor-pointer"
+              />
+              {uploading && <p className="text-xs text-gray-400 mt-1 animate-pulse">Uploading...</p>}
+            </div>
+
+            <div>
+              <p className="text-xs text-gray-400 mb-1">Or paste a new image URL</p>
+              <input
+                name="coverImage"
+                value={form.coverImage}
+                onChange={handleChange}
+                placeholder="https://..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea name="description" value={form.description} onChange={handleChange} rows={4}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" />
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-gray-50" />
         </div>
 
         <div className="flex gap-6">
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-sm text-gray-700">
             <input type="checkbox" name="inStock" checked={form.inStock} onChange={handleChange} />
             In Stock
           </label>
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-sm text-gray-700">
             <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange} />
             Featured
           </label>
@@ -165,16 +234,13 @@ export default function EditGamePage() {
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <div className="flex gap-3 pt-2">
-          <button onClick={handleSubmit} disabled={saving}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50">
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-          <button onClick={() => router.push('/admin/games')}
-            className="px-6 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
-            Cancel
-          </button>
-        </div>
+        <button
+          onClick={handleSubmit}
+          disabled={saving || uploading}
+          className="w-full py-3 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition">
+          {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+
       </div>
     </div>
   )
