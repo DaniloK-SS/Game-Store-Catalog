@@ -1,4 +1,5 @@
 defmodule GameStore.Cloudinary do
+  @behaviour GameStore.ImageService
   @doc """
   Uploads a file to Cloudinary using an unsigned upload preset.
   Returns {:ok, url} on success or {:error, reason} on failure.
@@ -48,9 +49,12 @@ defmodule GameStore.Cloudinary do
     end
   end
 
+  @impl true
   def extract_public_id(nil), do: :error
+  @impl true
   def extract_public_id(""), do: :error
 
+  @impl true
   def extract_public_id(url) when is_binary(url) do
     case String.split(url, "/upload/", parts: 2) do
       [_left, right] ->
@@ -67,6 +71,7 @@ defmodule GameStore.Cloudinary do
     end
   end
 
+  @impl true
   def delete(public_id) when is_binary(public_id) do
     cloud_name = config()[:cloud_name]
     api_key = config()[:api_key]
