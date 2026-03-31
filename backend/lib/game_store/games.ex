@@ -1,8 +1,8 @@
 defmodule GameStore.Games do
   alias GameStore.Repo
   alias GameStore.Games.Game
-  alias GameStore.Cloudinary
   import Ecto.Query
+
 
   def list_games(params \\ %{}) do
     Game
@@ -13,6 +13,7 @@ defmodule GameStore.Games do
     |> sort_by(params["sort"])
     |> Repo.all()
   end
+
 
   def get_game(id) do
     case Repo.get(Game, id) do
@@ -102,12 +103,17 @@ defmodule GameStore.Games do
   defp maybe_delete_cover_image(""), do: :ok
 
   defp maybe_delete_cover_image(url) do
-    case Cloudinary.extract_public_id(url) do
-      {:ok, public_id} ->
-        Cloudinary.delete(public_id)
 
-      :error ->
-        :ok
-    end
+  case image_service().extract_public_id(url) do
+    {:ok, public_id} ->
+      image_service().delete(public_id)
+
+    :error ->
+      :ok
+  end
+  end
+
+  defp image_service do
+    Application.fetch_env!(:game_store, :image_service)
   end
 end

@@ -31,7 +31,6 @@ defmodule GameStoreWeb.AdminSessionController do
     end
   end
 
-  # Clears the session and redirects to the login page.
   def delete(conn, _params) do
     conn
     |> clear_session()
