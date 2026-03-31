@@ -14,7 +14,8 @@ export async function getGames(params?: {
   if (params?.sort) query.append("sort", params.sort)
 
   const res = await fetch(
-    `https://game-store-catalog.onrender.com/api/games?${query.toString()}`, 
+    `https://game-store-catalog.onrender.com/api/games?${query.toString()}`,
+     
   )
 
   return res.json()
