@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { Game } from "../app/types/game";
 import { MdPlaylistAddCheck } from "react-icons/md";
@@ -6,19 +6,18 @@ import { FaHeartCirclePlus, FaHeartCircleXmark } from "react-icons/fa6";
 
 type Props = {
   game: Game;
-  isInWishlist: (gameId: number) => boolean,
-  onAddToWishlist: (gameId: number) => void
-  onRemoveFromWishlist: (gameId: number) => void
+  isInWishlist: (gameId: number) => boolean;
+  onAddToWishlist: (gameId: number) => void;
+  onRemoveFromWishlist: (gameId: number) => void;
 };
 
 export default function GameCard({
   game,
   onAddToWishlist,
   isInWishlist,
-  onRemoveFromWishlist
+  onRemoveFromWishlist,
 }: Props) {
-
-  const inWishlist = isInWishlist(game.id)
+  const inWishlist = isInWishlist(game.id);
 
   return (
     <Link
@@ -46,34 +45,35 @@ export default function GameCard({
 
         <p className="text-gray-500 text-sm">{game.platform}</p>
 
-        <p className="font-bold mt-2 text-lg text-black-600">
-          ${game.price}
-        </p>
+        <p className="font-bold mt-2 text-lg text-black-600">${game.price}</p>
 
-        <p className={`mt-2 text-xs font-semibold px-2 py-1 rounded-full inline-block
-          ${game.inStock 
-            ? "bg-green-100 text-green-700" 
-            : "bg-red-100 text-red-600"
+        <p
+          className={`mt-2 text-xs font-semibold px-2 py-1 rounded-full inline-block
+          ${
+            game.inStock
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-600"
           }`}
         >
           {game.inStock ? "In Stock" : "Out of Stock"}
         </p>
         <button
           onClick={(e) => {
-            e.preventDefault()
+            e.preventDefault();
             if (inWishlist) {
-              onRemoveFromWishlist(game.id)
+              onRemoveFromWishlist(game.id);
             } else {
-              onAddToWishlist(game.id)
+              onAddToWishlist(game.id);
             }
           }}
           className={`absolute bottom-3 right-3 md:hidden
             p-2.5 rounded-full 
             border transition-all duration-300 
             shadow-md hover:scale-110 active:scale-95
-            ${inWishlist
-              ? "bg-indigo-600 text-white border-indigo-500"
-              : "bg-white text-indigo-600 border-gray-300 hover:bg-gray-100"
+            ${
+              inWishlist
+                ? "bg-indigo-600 text-white border-indigo-500"
+                : "bg-white text-indigo-600 border-gray-300 hover:bg-gray-100"
             }
           `}
         >
@@ -87,17 +87,18 @@ export default function GameCard({
           onClick={(e) => {
             e.preventDefault();
             if (inWishlist) {
-              onRemoveFromWishlist(game.id)
+              onRemoveFromWishlist(game.id);
             } else {
-              onAddToWishlist(game.id)
+              onAddToWishlist(game.id);
             }
           }}
           className={`mt-4 w-full hidden md:flex items-center justify-center gap-2 
             py-2 rounded-md transition-all duration-200
             hover:scale-[1.02] active:scale-95
-            ${inWishlist 
-              ? "bg-gray-600 text-white hover:bg-gray-700" 
-              : "bg-indigo-600 text-white hover:bg-indigo-700"
+            ${
+              inWishlist
+                ? "bg-gray-600 text-white hover:bg-gray-700"
+                : "bg-indigo-600 text-white hover:bg-indigo-700"
             }`}
         >
           <MdPlaylistAddCheck />

@@ -16,7 +16,6 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   })
 
   if (response.status === 401) {
-    // Token istekao ili nije validan — vrati na login
     localStorage.removeItem('token')
     window.location.href = '/admin/login'
   }
