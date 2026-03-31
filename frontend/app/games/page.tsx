@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import GameGrid from "@/components/GameGrid";
 import FilterPanel from "@/components/FilterPanel";
@@ -16,16 +15,12 @@ export default function GamesPage() {
   const [inStock, setInStock] = useState(false);
   const [sort, setSort] = useState("");
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      const data = await getGames({
-        search,
-        platform,
-        genre,
-        inStock,
-        sort,
-      });
+      setLoading(true); // ← svaki novi fetch = loading
+      const data = await getGames({ search, platform, genre, inStock, sort });
 
       const parsedGames = Array.isArray(data) ? data : data?.data || [];
 
@@ -36,6 +31,7 @@ export default function GamesPage() {
       }));
 
       setGames(normalizedGames);
+      setLoading(false);
     }
 
     fetchData();
@@ -48,9 +44,7 @@ export default function GamesPage() {
     }
   }, []);
 
-  const isInWishlist = (id: number) => {
-    return wishlist.includes(id);
-  };
+  const isInWishlist = (id: number) => wishlist.includes(id);
 
   const handleAddToWishlist = (id: number) => {
     if (wishlist.includes(id)) return;
@@ -84,7 +78,16 @@ export default function GamesPage() {
         </div>
 
         <div className="md:col-span-3">
-          {games.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-72 bg-gray-100 rounded-xl animate-pulse"
+                />
+              ))}
+            </div>
+          ) : games.length === 0 ? (
             <EmptyState
               onClear={() => {
                 setPlatform("");
