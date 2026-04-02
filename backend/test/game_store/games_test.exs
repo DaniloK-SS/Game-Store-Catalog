@@ -30,6 +30,27 @@ defmodule GameStore.GamesTest do
       assert {:error, changeset} = Games.create_game(attrs)
       assert "can't be blank" in errors_on(changeset).title
     end
+
+    test "validates price must be greater than zero" do
+      attrs = valid_attr_fixture() |> Map.put(:price, Decimal.new("0"))
+
+      assert {:error, changeset} = Games.create_game(attrs)
+      assert "must be greater than 0" in errors_on(changeset).price
+    end
+
+    test "validates release year range" do
+      attrs = valid_attr_fixture() |> Map.put(:release_year, 1940)
+
+      assert {:error, changeset} = Games.create_game(attrs)
+      assert "must be greater than 1950" in errors_on(changeset).release_year
+    end
+
+    test "validates title length" do
+      attrs = valid_attr_fixture() |> Map.put(:title, String.duplicate("a", 256))
+
+      assert {:error, changeset} = Games.create_game(attrs)
+      assert "should be at most 255 character(s)" in errors_on(changeset).title
+    end
   end
 
   describe "update_game/2" do
@@ -51,6 +72,17 @@ defmodule GameStore.GamesTest do
       assert "is invalid" in errors_on(changeset).title
       assert {:ok, fetched_game} = Games.get_game(game.id)
       assert fetched_game.title == game.title
+    end
+  end
+
+  describe "upload_cover_image/1" do
+    test "returns the uploaded image url on success" do
+      assert {:ok, image_url} = Games.upload_cover_image("some-file-path")
+      assert image_url == "https://example.com/test-image.webp"
+    end
+
+    test "returns an error when the upload fails" do
+      assert {:error, :upload_failed} = Games.upload_cover_image("upload-fails")
     end
   end
 
@@ -123,6 +155,20 @@ defmodule GameStore.GamesTest do
       refute game_b.id in result_ids
     end
 
+    test "ignores invalid in_stock values" do
+      %{a: game_a, b: game_b, c: game_c} = list_games_fixture()
+
+      params = %{"in_stock" => "banana"}
+
+      result = Games.list_games(params)
+      result_ids = Enum.map(result, & &1.id)
+
+      assert length(result) == 3
+      assert game_a.id in result_ids
+      assert game_b.id in result_ids
+      assert game_c.id in result_ids
+    end
+
     test "returns games filtered by search" do
       %{a: game_a, b: game_b, c: game_c} = list_games_fixture()
 
@@ -173,6 +219,20 @@ defmodule GameStore.GamesTest do
       assert result_ids == [game_a.id, game_b.id, game_c.id]
     end
 
+    test "ignores invalid sort values" do
+      %{a: game_a, b: game_b, c: game_c} = list_games_fixture()
+
+      params = %{"sort" => "banana"}
+
+      result = Games.list_games(params)
+      result_ids = Enum.map(result, & &1.id)
+
+      assert length(result) == 3
+      assert game_a.id in result_ids
+      assert game_b.id in result_ids
+      assert game_c.id in result_ids
+    end
+
     test "Combines platform and genre filters" do
       %{a: game_a, b: game_b, c: game_c} = list_games_fixture()
 
@@ -198,6 +258,20 @@ defmodule GameStore.GamesTest do
       assert length(result) == 1
       assert game_a.id in result_ids
       refute game_b.id in result_ids
+      refute game_c.id in result_ids
+    end
+
+    test "supports camelCase inStock filter" do
+      %{a: game_a, b: game_b, c: game_c} = list_games_fixture()
+
+      params = %{"inStock" => "true"}
+
+      result = Games.list_games(params)
+      result_ids = Enum.map(result, & &1.id)
+
+      assert length(result) == 2
+      assert game_a.id in result_ids
+      assert game_b.id in result_ids
       refute game_c.id in result_ids
     end
 
@@ -245,6 +319,25 @@ defmodule GameStore.GamesTest do
       assert {:ok, deleted_game} = Games.delete_game(game)
       assert deleted_game.id == game.id
       assert {:error, :not_found} = Games.get_game(game.id)
+    end
+
+    test "deletes the game when cover_image is an empty string" do
+      game = game_fixture(%{cover_image: ""})
+
+      assert {:ok, deleted_game} = Games.delete_game(game)
+      assert deleted_game.id == game.id
+      assert {:error, :not_found} = Games.get_game(game.id)
+    end
+  end
+
+  describe "change_game/2" do
+    test "returns a changeset for the given game and attrs" do
+      game = game_fixture()
+      changeset = Games.change_game(game, %{title: "Updated Title"})
+
+      assert changeset.data.id == game.id
+      assert Ecto.Changeset.get_change(changeset, :title) == "Updated Title"
+      assert changeset.valid?
     end
   end
 

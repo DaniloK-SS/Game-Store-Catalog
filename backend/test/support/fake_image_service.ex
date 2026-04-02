@@ -2,6 +2,10 @@ defmodule GameStore.FakeImageService do
   @behaviour GameStore.ImageService
 
   @impl true
+  def upload("upload-fails"), do: {:error, :upload_failed}
+  def upload(_file_path), do: {:ok, "https://example.com/test-image.webp"}
+
+  @impl true
   def extract_public_id(nil), do: :error
 
   @impl true

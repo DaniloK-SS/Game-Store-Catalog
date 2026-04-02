@@ -2,12 +2,25 @@ defmodule GameStoreWeb.GameController do
   use GameStoreWeb, :controller
 
   alias GameStore.Games
+  @valid_sort_values ~w(priceLow priceHigh newest title)
 
   # Returns a list of all games.
   # Accepts optional query params for filtering (platform, genre, in_stock, search).
   def index(conn, params) do
-    games = Games.list_games(params)
-    render(conn, :index, games: games)
+    case validate_sort(params) do
+      :ok ->
+        games = Games.list_games(params)
+        render(conn, :index, games: games)
+
+      {:error, {:invalid_sort, sort}} ->
+        conn
+        |> put_status(:bad_request)
+        |> render(:error,
+          message: "Invalid sort value",
+          received: sort,
+          allowed: @valid_sort_values
+        )
+    end
   end
 
   # Returns a single game by ID.
@@ -88,4 +101,9 @@ defmodule GameStoreWeb.GameController do
         |> render(:error, message: "Game not found")
     end
   end
+
+  defp validate_sort(%{"sort" => sort}) when sort not in @valid_sort_values,
+    do: {:error, {:invalid_sort, sort}}
+
+  defp validate_sort(_params), do: :ok
 end

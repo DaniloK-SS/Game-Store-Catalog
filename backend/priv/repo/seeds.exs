@@ -202,7 +202,7 @@ for {email, password} <- admin_accounts do
     case GameStore.Accounts.create_user(%{
            email: email,
            password: password,
-           role: "admin"
+           role: :admin
          }) do
       {:ok, user} -> IO.puts("Created admin: #{user.email}")
       {:error, changeset} -> IO.puts("Skipped #{email}: #{inspect(changeset.errors)}")

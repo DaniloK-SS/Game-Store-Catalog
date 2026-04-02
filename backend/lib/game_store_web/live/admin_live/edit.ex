@@ -2,7 +2,7 @@ defmodule GameStoreWeb.AdminLive.Edit do
   use GameStoreWeb, :live_view
 
   alias GameStore.Games
-  alias GameStore.Cloudinary
+  alias GameStoreWeb.AdminLive.UploadHelpers
 
   # Loads the existing game by ID and configures file upload.
   # Redirects to admin index if the game does not exist.
@@ -78,15 +78,18 @@ defmodule GameStoreWeb.AdminLive.Edit do
   # Immediately sends it to Cloudinary and stores the URL in assigns.
   def handle_progress(:cover_image, entry, socket) do
     if entry.done? do
-      uploaded_url =
+      upload_result =
         consume_uploaded_entry(socket, entry, fn %{path: path} ->
-          case Cloudinary.upload(path) do
-            {:ok, url} -> {:ok, url}
-            {:error, _} -> {:ok, nil}
-          end
+          {:ok, Games.upload_cover_image(path)}
         end)
 
-      {:noreply, assign(socket, :uploaded_cover_image_url, uploaded_url)}
+      case upload_result do
+        {:ok, uploaded_url} ->
+          {:noreply, UploadHelpers.assign_uploaded_cover_image(socket, {:ok, uploaded_url})}
+
+        {:error, reason} ->
+          {:noreply, UploadHelpers.assign_uploaded_cover_image(socket, {:error, reason})}
+      end
     else
       {:noreply, socket}
     end

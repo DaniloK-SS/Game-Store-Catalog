@@ -1,4 +1,8 @@
 defmodule GameStore.Games.Game do
+  @moduledoc """
+  Ecto schema representing a game listed in the store catalog.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -17,7 +21,12 @@ defmodule GameStore.Games.Game do
     timestamps(type: :utc_datetime)
   end
 
-  @doc false
+  @doc """
+  Builds a changeset for creating or updating a game.
+
+  Expects a `%Game{}` struct and a map of attributes.
+  Returns an `Ecto.Changeset` with casting and validation errors applied.
+  """
   def changeset(game, attrs) do
     game
     |> cast(attrs, [
@@ -40,5 +49,8 @@ defmodule GameStore.Games.Game do
       :release_year,
       :publisher
     ])
+    |> validate_length(:title, max: 255)
+    |> validate_number(:price, greater_than: 0)
+    |> validate_number(:release_year, greater_than: 1950, less_than: 2030)
   end
 end

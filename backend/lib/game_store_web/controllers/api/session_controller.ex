@@ -6,12 +6,18 @@ defmodule GameStoreWeb.Api.SessionController do
   def create(conn, %{"email" => email, "password" => password}) do
     case Accounts.authenticate_user(email, password) do
       {:ok, user} ->
-        if user.role == "admin" do
-          {:ok, token} = Accounts.create_token(user)
+        if user.role == :admin do
+          case Accounts.create_token(user) do
+            {:ok, token} ->
+              conn
+              |> put_status(:created)
+              |> json(%{token: token.token})
 
-          conn
-          |> put_status(:created)
-          |> json(%{token: token.token})
+            {:error, _changeset} ->
+              conn
+              |> put_status(:internal_server_error)
+              |> json(%{error: "Failed to create session"})
+          end
         else
           conn
           |> put_status(:forbidden)
@@ -36,11 +42,22 @@ defmodule GameStoreWeb.Api.SessionController do
       |> get_req_header("authorization")
       |> parse_token()
 
-    Accounts.delete_token(token_value)
+    case Accounts.delete_token(token_value) do
+      :ok ->
+        conn
+        |> put_status(:ok)
+        |> json(%{message: "Logged out successfully"})
 
-    conn
-    |> put_status(:ok)
-    |> json(%{message: "Logged out successfully"})
+      {:ok, _token} ->
+        conn
+        |> put_status(:ok)
+        |> json(%{message: "Logged out successfully"})
+
+      {:error, _changeset} ->
+        conn
+        |> put_status(:internal_server_error)
+        |> json(%{error: "Failed to log out"})
+    end
   end
 
   # Extracts the token string from the Authorization header.

@@ -13,7 +13,7 @@ defmodule GameStoreWeb.UserJSON do
     %{
       id: user.id,
       email: user.email,
-      role: user.role
+      role: Atom.to_string(user.role)
     }
   end
 end

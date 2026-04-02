@@ -3,6 +3,7 @@ defmodule GameStoreWeb.AdminLive.New do
 
   alias GameStore.Games
   alias GameStore.Games.Game
+  alias GameStoreWeb.AdminLive.UploadHelpers
 
   # On mount we create an empty changeset and configure
   # the file upload. allow_upload tells LiveView to accept
@@ -64,15 +65,18 @@ defmodule GameStoreWeb.AdminLive.New do
 
   def handle_progress(:cover_image, entry, socket) do
     if entry.done? do
-      uploaded_url =
+      upload_result =
         consume_uploaded_entry(socket, entry, fn %{path: path} ->
-          case GameStore.Cloudinary.upload(path) do
-            {:ok, url} -> {:ok, url}
-            {:error, _} -> {:ok, nil}
-          end
+          {:ok, Games.upload_cover_image(path)}
         end)
 
-      {:noreply, assign(socket, :uploaded_cover_image_url, uploaded_url)}
+      case upload_result do
+        {:ok, uploaded_url} ->
+          {:noreply, UploadHelpers.assign_uploaded_cover_image(socket, {:ok, uploaded_url})}
+
+        {:error, reason} ->
+          {:noreply, UploadHelpers.assign_uploaded_cover_image(socket, {:error, reason})}
+      end
     else
       {:noreply, socket}
     end

@@ -7,8 +7,10 @@ defmodule GameStoreWeb.GameJSON do
     %{data: game(game)}
   end
 
-  def error(%{message: message}) do
-    %{error: message}
+  def error(assigns) do
+    %{error: assigns.message}
+    |> maybe_put(:received, Map.get(assigns, :received))
+    |> maybe_put(:allowed, Map.get(assigns, :allowed))
   end
 
   defp game(game) do
@@ -26,4 +28,7 @@ defmodule GameStoreWeb.GameJSON do
       featured: game.featured
     }
   end
+
+  defp maybe_put(map, _key, nil), do: map
+  defp maybe_put(map, key, value), do: Map.put(map, key, value)
 end

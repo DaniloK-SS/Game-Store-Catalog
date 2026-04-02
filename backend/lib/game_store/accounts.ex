@@ -1,11 +1,21 @@
 defmodule GameStore.Accounts do
+  @moduledoc """
+  The accounts context for users, roles, and API authentication tokens.
+  """
+
   alias GameStore.Repo
   alias GameStore.Accounts.User
   alias GameStore.Accounts.Token
 
+  @doc """
+  Creates a new user account.
+
+  Expects a map of user registration attributes.
+  Returns `{:ok, %User{}}` on success or `{:error, %Ecto.Changeset{}}` on failure.
+  """
   def create_user(attrs) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -21,14 +31,12 @@ defmodule GameStore.Accounts do
   how fast the response comes back.
   """
   def authenticate_user(email, password) do
-    user = Repo.get_by(User, email: String.downcase(email))
-
-    case user do
+    case Repo.get_by(User, email: String.downcase(email)) do
       nil ->
         Bcrypt.no_user_verify()
         {:error, :invalid_credentials}
 
-      user ->
+      %User{} = user ->
         if Bcrypt.verify_pass(password, user.password_hash) do
           {:ok, user}
         else
@@ -37,6 +45,12 @@ defmodule GameStore.Accounts do
     end
   end
 
+  @doc """
+  Fetches a user by id.
+
+  Expects a user id.
+  Returns a `%User{}` struct or `nil` when no user exists for that id.
+  """
   def get_user(id) do
     Repo.get(User, id)
   end
@@ -47,55 +61,73 @@ defmodule GameStore.Accounts do
   database linked to the user, and returns it.
   This token is what gets sent back to the client after login.
   """
-  def create_token(user) do
+  def create_token(%User{} = user) do
     token_value = :crypto.strong_rand_bytes(32) |> Base.url_encode64(padding: false)
 
     %Token{}
-    |> Ecto.Changeset.change(%{token: token_value, user_id: user.id})
+    |> Token.changeset(%{token: token_value, user_id: user.id})
     |> Repo.insert()
   end
 
   def get_user_by_token(nil), do: {:error, :unauthorized}
 
   @doc """
-  Looks up a token and returns the associated user.
+  Looks up a token and returns the associated admin user.
+
+  Expects a token string or `nil`.
   This runs on every authenticated API request.
-  Returns {:ok, user} if the token exists and the user is an admin.
-  Returns {:error, :unauthorized} otherwise.
+  Returns `{:ok, %User{}}` if the token exists and belongs to an admin,
+  or `{:error, :unauthorized}` otherwise.
   """
   def get_user_by_token(token_value) do
-    token = Repo.get_by(Token, token: token_value)
-
-    case token do
+    case Repo.get_by(Token, token: token_value) do
       nil ->
         {:error, :unauthorized}
 
-      token ->
-        user = Repo.get(User, token.user_id)
+      %Token{} = token ->
+        case Repo.preload(token, :user) do
+          %Token{user: %User{role: :admin} = user} ->
+            {:ok, user}
 
-        if user && user.role == "admin" do
-          {:ok, user}
-        else
-          {:error, :unauthorized}
+          %Token{} ->
+            {:error, :unauthorized}
         end
     end
   end
 
+  @doc """
+  Deletes an API token if it exists.
+
+  Expects a token string.
+  Returns `:ok` when no token exists, `{:ok, %Token{}}` when deletion succeeds,
+  or `{:error, %Ecto.Changeset{}}` if deletion fails.
+  """
   def delete_token(token_value) do
     case Repo.get_by(Token, token: token_value) do
       nil ->
         :ok
 
-      token ->
+      %Token{} = token ->
         Repo.delete(token)
-        :ok
     end
   end
 
+  @doc """
+  Lists all users.
+
+  Expects no arguments.
+  Returns a list of `%User{}` structs.
+  """
   def list_users do
     Repo.all(User)
   end
 
+  @doc """
+  Updates a user's role while preventing an admin from demoting themselves.
+
+  Expects a user id, a role value, and the current `%User{}` performing the action.
+  Returns `{:ok, %User{}}`, `{:error, :not_found}`, or `{:error, reason}`.
+  """
   def update_user_role(id, role, current_user) do
     with %User{} = user <- Repo.get(User, id),
          :ok <- prevent_self_demotion(user, role, current_user) do
@@ -112,7 +144,7 @@ defmodule GameStore.Accounts do
   end
 
   defp prevent_self_demotion(user, role, current_user) do
-    if user.id == current_user.id and current_user.role == "admin" and role == "user" do
+    if user.id == current_user.id and current_user.role == :admin and role in [:user, "user"] do
       {:error, :cannot_demote_self}
     else
       :ok

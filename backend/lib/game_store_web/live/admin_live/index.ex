@@ -30,7 +30,7 @@ defmodule GameStoreWeb.AdminLive.Index do
           {:error, reason} ->
             socket =
               socket
-              |> put_flash(:error, "Failed to delete game: #{inspect(reason)}")
+              |> put_flash(:error, delete_error_message(reason))
 
             {:noreply, socket}
         end
@@ -43,6 +43,9 @@ defmodule GameStoreWeb.AdminLive.Index do
         {:noreply, socket}
     end
   end
+
+  defp delete_error_message(:delete_failed), do: "Failed to delete the cover image for this game"
+  defp delete_error_message(_reason), do: "Failed to delete game"
 
   def render(assigns) do
     ~H"""
